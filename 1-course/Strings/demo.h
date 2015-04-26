@@ -25,7 +25,7 @@ namespace demo{
 
 	void C_copy();
 	void C_cat();
-	void C_base_find(char *a, int lena, char *b, int lenb);
+	void C_base_find(char *a, char *b);
 	void C_find();
 	void C_compare();
 	void C_len();
