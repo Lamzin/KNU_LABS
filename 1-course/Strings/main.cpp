@@ -37,7 +37,7 @@ int main(){
 			case 4:
 				demo::C_find(); 		break;
 			case 5:
-				demo::C_compare();  	break;
+				demo::C_compare();  		break;
 			case 6:
 				demo::C_len();  		break;
 			case 7:
@@ -45,18 +45,18 @@ int main(){
 			case 8:
 				demo::CPP_copy();  		break;
 			case 9:
-				demo::CPP_append();  	break;
+				demo::CPP_append();  		break;
 			case 10:
 				demo::CPP_find();  		break;
 			case 11:
-				demo::CPP_compare();  	break;
+				demo::CPP_compare();  		break;
 			case 12:
 				demo::CPP_len();  		break;
 			case 13:
-				demo::CPP_replace3(); 	break;
+				demo::CPP_replace3(); 		break;
 
 			case -1:
-				cout << "Good buy!\n"; 	break;
+				cout << "Good buy!\n"; 		break;
 			default:
 				cout << "command not found\n";
 		}
