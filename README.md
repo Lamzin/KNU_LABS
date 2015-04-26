@@ -1,2 +1,3 @@
 # KNU_LABS
 #1st course: GreenHouse, Geometry, Strings...
+#    Grenhouse: -std=c++11 -lpthread
