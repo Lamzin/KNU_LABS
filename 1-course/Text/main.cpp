@@ -56,22 +56,11 @@ void print_info(){
          << "Task: File contains the results of student examinations assembly winter session.\n"
          << "      Find the best 5 students and their result.\n\n"
 
-         << "input file BNF:\n"
-         << "<students_count>\n"
-         << "<first name>; <middle name>; <last name>; <subject>; <score 100> <score 5>\n"
-         << "...\n"
-         << "<first name>; <middle name>; <last name>; <subject>; <score 100> <score 5>\n"
-         << "<number of records>; <total score>\n\n"
-
-         << "output BNF:\n"
-         << "(TOP)\n"
-         << "(student) <name> (total_score) <total_score>\n"
-         << "    (subj) <subject_name> (score100) <score100> (score5) <score5>\n"
-         << "    ...\n"
-         << "    (subj) <subject_name> (score100) <score100> (score5) <score5>\n"
-         << "...\n"
-         << "(student) <name> (total_score) <total_score>\n"
-         << "    (subj) <subject_name> (score100) <score100> (score5) <score5>\n"
-         << "    ...\n"
-         << "    (subj) <subject_name> (score100) <score100> (score5) <score5>\n\n";
+         << "BNF:\n"
+         << "<digit>   ::= '0'|'1'|...|'9'\n"
+         << "<number>  ::= ['+'|'-'']<digit>|<digit><number>\n"
+         << "<char>    ::= 'a'|'b'|...|'z'|'A'|'B'|...|'Z'\n"
+         << "<string>  ::= <char>|<char><string>\n\n"
+         << "<input>   ::= <number>\\n{<string>';'<string>';'<string>';'<string>';'<number>';'<number>'\\n'}<number>';'<number>\n\n"
+         << "<output>  ::= '(TOP)'\\n{<string>' '<number>\\n{<string>''<number>' '<number>\\n}}\n\n";
 }
