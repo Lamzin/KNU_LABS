@@ -9,9 +9,10 @@
 /**********************************************************/
 #include <iostream>
 #include <fstream>
-#include <algorithm>
 #include "database.h"
 #include "reader.h"
+#include "types.h"
+#include "sort.h"
 
 using namespace std;
 
@@ -23,12 +24,17 @@ subject::subject(string _name, int _score100, int _score5)
         score5(_score5){}
 
 void subject::print(ostream &out){
-    out << "        (subj) " << name << " (score100) " << score100 << ", (score5) " << score5 << endl;
+    out.width(40);
+    out << name;
+    out.width(10);
+    out << score100;
+    out.width(10);
+    out << score5 << endl;
 }
 
 student::student(){
     name = "";
-    total_score = 0;    
+    total_score = 0;
 }
 
 student::student(string _name, subject subj){
@@ -43,7 +49,11 @@ void student::push(subject subj){
 }
 
 void student::print(ostream &out){
-    out << "    (student) " << name << " (total_score) " << total_score << endl;
+    out.width(40);
+    out << name;
+    out.width(10);
+    out << total_score << endl;
+
     for(int i = 0; i < result.size(); i++){
         result[i].print(out);
     }
@@ -69,13 +79,11 @@ void database::print(ostream &out){
 void database::print_top(ostream &out){
     if (!full) return;
     
-    pair<int, int> *vpii = new pair<int, int>[data.size()];
+    Vector<Pair<int> > vpii;
     
-    for(int i = 0; i<data.size(); i++){
-        vpii[i] = make_pair(data[i].total_score, i);
-    }   
+    for(int i = 0; i<data.size(); i++) vpii.push_back(Pair<int>(data[i].total_score, i));
+    Sort(vpii);
 
-    sort(vpii, vpii + data.size());
     out << "(TOP)" << endl;
     for (int i = 0; i<min(5, (int)data.size()); i++){
         data[vpii[data.size() - 1 - i].second].print(out);
