@@ -19,8 +19,6 @@ int reader::students, reader::number_of_records, reader::total_score;
 int reader::cur_score100, reader::cur_score5;
 string reader::cur_name, reader::cur_subject;
 
-#define what_is(x) cerr << #x << " " << x << endl;
-
 bool reader::toint(string &s, int &n){
     std::size_t error;
     int var = std::stoi(s, &error);
@@ -35,13 +33,14 @@ Vector<string> reader::split(string &str){
     string tmp="";
 
     for (int j = 0; j < str.length(); j++){
-        if (str[j] == ' ' || str[j] == ';'){
-            if (tmp.length()) vect_split.push_back(tmp);
+        if (str[j] == ' ') continue;
+        if (str[j] == ';'){
+            vect_split.push_back(tmp);
             tmp = "";
         }
         else tmp += str[j];
     }
-    if (tmp!="") vect_split.push_back(tmp);
+    vect_split.push_back(tmp);
 
     return vect_split;
 }
@@ -95,6 +94,10 @@ bool reader::load_data(database *data, string input_file){//return true if load 
         if (file) vect_str.push_back(tmp_str);
     }
     file.close();
+    if (vect_str.size() < 2){
+        cerr << "(ERROR) too short input file.\n";
+        return false;
+    }
 
     if (!check_header(vect_str[0])){
         cerr << "(ERROR) invalid header.\n";
