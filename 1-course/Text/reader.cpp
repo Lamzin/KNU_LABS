@@ -28,6 +28,14 @@ bool reader::toint(string &s, int &n){
     return true;
 }
 
+bool reader::is_own_title(string s){
+    for (int i = 0; i<s.length(); i++){
+        if (s[i] == ' ') continue;
+        if (('a' > s[i] || s[i] > 'z') && ('A' > s[i] || s[i] > 'Z')) return false;
+    }
+    return true;
+}
+
 Vector<string> reader::split(string &str){
     Vector<string> vect_split;
     string tmp="";
@@ -57,7 +65,11 @@ bool reader::check_line(string &str){
     if (vect_split.size() != 6) return false;
 
     int tmp_score5, tmp_score100;
-    if (toint(vect_split[4], tmp_score100) && toint(vect_split[5], tmp_score5)){
+    if (       toint(vect_split[4], tmp_score100) 
+            && toint(vect_split[5], tmp_score5) 
+            && is_own_title(vect_split[0] + " " + vect_split[1] + " " + vect_split[2]) 
+            && is_own_title(vect_split[3])){
+
         cur_score100 = tmp_score100;
         cur_score5   = tmp_score5;
         cur_name = vect_split[0] + " " + vect_split[1] + " " + vect_split[2];
@@ -117,7 +129,7 @@ bool reader::load_data(database *data, string input_file){//return true if load 
             summary_score100 += cur_score100;
         }
         else{
-            cerr << "(ERROR) invalid data, line = " << i << ".\n";
+            cerr << "(ERROR) invalid data, line = " << i + 1 << ".\n";
             return i > 1;
         }
     }
