@@ -22,6 +22,7 @@ private:
 
     static Vector<string> split(string &s);
     static bool toint(string &s, int &n);
+    static bool is_own_title(string s);
 
     static bool check_header(string &str);
     static bool check_line(string &str);
