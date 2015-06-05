@@ -69,9 +69,12 @@ int main(int argc, char **argv){
 }
 
 void user(){
-    calc calculator;
+    calc calculator; double result; bool error;
     cout << "Enter expression: ";
-    cout << "Result: " << calculator.calculate(cin) << endl;
+    result = calculator.calculate(cin, error);
+    cout << "Result: ";
+    if (error) cout << "INVALID EXPRESSION\n";
+    else cout << result << endl;
 }
 
 void file(char *name){
@@ -81,13 +84,17 @@ void file(char *name){
         return;
     }
 
-    calc calculator;
-    cout << "Result: " << calculator.calculate(file) << endl;
+    calc calculator; double result; bool error;
+    result = calculator.calculate(file, error);
+    cout << "Result: ";
+    if (error) cout << "INVALID EXPRESSION\n";
+    else cout << result << endl;
+
     file.close();
 }
 
 void testing(){
-    calc calculator;
+    calc calculator; bool error;
     vector<pair<string, double> > tests;
     int AC_count = 0;
 
@@ -105,12 +112,15 @@ void testing(){
 
     cout << "Test result:\n";
     for (int i = 0; i<tests.size(); i++){
-        double res = calculator.calculate(tests[i].first);
+        double res = calculator.calculate(tests[i].first, error);
         cout << "    " << tests[i].first << endl;
         cout << "    Expected result: " << tests[i].second << endl;
-        cout << "    Result: " << res << endl;
-        cout << "    " << (my_abs(res - tests[i].second) < 0.000001 ? "OK" : "WA") << endl;       
-        AC_count += my_abs(res - tests[i].second) < 0.000001;
+        cout << "    Result: ";
+        if (!error){
+            cout << res << endl << "    " << (my_abs(res - tests[i].second) < 0.000001 ? "OK" : "WA") << endl;       
+            AC_count += my_abs(res - tests[i].second) < 0.000001;
+        }
+        else cout << "INVALID EXPRESSION\n";
     }
     cout << "AC: " << AC_count << " / " << tests.size() << endl;
 }
@@ -131,19 +141,14 @@ void print_info(){
          << "        -f file_name: to calculate recorded in a file expression, user enters the file name\n"
          << "        -t : to execute automatic testing and display the result\n\n"
 
-         << "BNF:\n"
-         << "terminals:  '+', '-', '*', '/', '(', ')', 'x', 'exp' // x - double\n"
-         << "nonterminals: <expression>, <term>, <factor>\n"
-         << "products:\n"
-         << "    <expression> → <expression> + <term>\n"
-         << "    <expression> → <expression> - <term>\n"
-         << "    <expression> → <term>\n"
-         << "    <term> → <term> * <factor>\n"
-         << "    <term> → <term> / <factor>\n"
-         << "    <term> → exp(<factor>)\n"
-         << "    <term> → <factor>\n"
-         << "    <factor> → (<expression>)\n"
-         << "    <factor> → x,\n"
-         << "the initial nonterminal <expression>.\n\n\n";
-         //URL ="https://en.wikipedia.org/wiki/Context-free_grammar"
+         << "BNF\n"
+         << "    <digit> ::= '0' | '1' | ... | '9'\n"
+         << "    <uint> ::= <digit> | <digit><uint>\n"
+         << "    <int> ::= ['+' | '-']<uint>\n\n"
+         << "    <double_normal> ::= <int>'.'<uint>\n"
+         << "    <double_science> ::= <double_normal>'e'<int>\n"
+         << "    <double> ::= <double_normal> | <double_science>\n\n"
+         << "    <bin_op> ::= '+' | '-' | '*' | '/'\n"
+         << "    <expression> ::= <double> | <expression><bin_op><expression> | 'exp('<expression>')'\n\n"
+         << "    <input> ::= <expression>\n\n";
 }
