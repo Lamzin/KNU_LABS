@@ -28,7 +28,7 @@ bool torpn::isOperation(char ch){
 }
 
 bool torpn::isNum(char ch){
-    return ch == '.' || (ch >= '0' && ch <= '9');
+    return ch == '.' || ch == 'e' || (ch >= '0' && ch <= '9');
 }
 
 bool torpn::isUnary(char ch){
@@ -43,10 +43,13 @@ int torpn::priority(char op){
         -1;
 }
 
-vector<node> torpn::str_to_rpn(string s){
+vector<node> torpn::str_to_rpn(string s, bool &err){
+    err = true;
+
     vector<node> rpn;
     vector<char> op;
     double sign = 1.0f;
+    bool prev_numb = false;
 
     for(int i = 0; i < s.length(); i++){
         if (isDelim(s[i])) continue;
@@ -73,26 +76,28 @@ vector<node> torpn::str_to_rpn(string s){
             op.push_back(s[i]);
             continue;
         }
-        string operand;
-        if (i - 2 >= 0  && s[i - 2] == '(' 
-            && 
-            (s[i - 1] == '-' || s[i - 1] == '+')) operand += '-';
-        while(i < s.length() && isNum(s[i])) operand += s[i++];
-        --i;
 
         std::size_t error;
-        double numb = std::stod(operand, &error);
+        double numb = std::stod(s.substr(i), &error);
+        if (    i - 2 >= 0 && 
+                s[i - 2] == '(' && 
+                s[i - 1] == '-') numb *= -1;
+
+        i += error - 1;
+
         rpn.push_back(node(numb));
     }
 
+    err = false;
     return rpn;
 }
 
-string calc::prepare(string s){
+string calc::prepare(string s, bool &err){
     s = "(" + s + ")";
     std::size_t found = s.find("exp");
     while(found != std::string::npos){
-        s.replace(found, 3, "#");                
+        if (found + 3 >= s.length() || s[found + 3] != '(') err = true;
+        s.replace(found, 3, "#");
         found = s.find("exp");
     }
     found = s.find(" ");
@@ -118,7 +123,8 @@ bool calc::inAlphabet(char ch){
     return  ch == '+' || ch == '-' || 
             ch == '*' || ch == '/' || 
             ch == '#' || ch == '.' || 
-            ch == '(' || ch == ')' || ch == ' ' || 
+            ch == '(' || ch == ')' || 
+            ch == ' ' || ch == 'e' || ch == '\t' || 
             (ch >= '0' && ch <= '9');
 }
 
@@ -142,30 +148,43 @@ bool calc::isExpression(string s){
     return true;
 }
 
-double calc::calculate(istream &out){
+double calc::calculate(istream &out, bool &err){
     string s;
     getline(out, s);
-    return calculate(s);
+    return calculate(s, err);
 }
 
-double calc::calculate(string str){
-    string prep = prepare(str);
+double calc::calculate(string str, bool &err){
+    err = false;
+
+    string prep = prepare(str, err);
+    if (err) return 0.0f;
     if(!isExpression(prep)){
-        cout << "(ERROR: Invalid expression) ";
+        err = true;
         return 0.0f;
     }
 
-    vector<node> rpn = torpn::str_to_rpn(prep); 
+    torpn torpn_obj;
+    vector<node> rpn = torpn_obj.str_to_rpn(prep, err);
+    if (err) return 0.0f;
     vector<double> value_stack;
 
     for(int i = 0; i < rpn.size(); i++){
         if (rpn[i].isop){
             double result;
-            if (rpn[i].operation == '#'){
+            if (rpn[i].operation == '#'){// # == exp
+                if (value_stack.size() < 1){
+                    err = true;
+                    return 0.0f;
+                }
                 double operand = value_stack.back(); value_stack.pop_back();
                 result = exp(operand);
             }
             else{
+                if (value_stack.size() < 2){
+                    err = true;
+                    return 0.0f;
+                }
                 double r = value_stack.back(); value_stack.pop_back();
                 double l = value_stack.back(); value_stack.pop_back();
                 switch(rpn[i].operation){
@@ -183,5 +202,9 @@ double calc::calculate(string str){
         }
         else value_stack.push_back(rpn[i].number);
     }
+
+    if (value_stack.size() != 1) return 0.0f;
+
+    err = false;
     return value_stack[0];
 }
