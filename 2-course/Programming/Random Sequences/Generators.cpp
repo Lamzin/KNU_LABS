@@ -253,7 +253,7 @@ f64 RatioMethodForNormalDeviates::next_f64(){
 
 		numb0 = sqrt(8 / exp(1.0f)) * (V - 0.5f) / U;
 
-	} while (numb0 * numb0 > -4 * log(U) && numb0 * numb0 < 4 * exp(-1.35) / U + 1.4);
+	} while (numb0 * numb0 > -4 * log(U) || numb0 * numb0 < 4 * exp(-1.35) / U + 1.4);
 
 	histo->add(numb0);
 	return numb0;
@@ -304,7 +304,7 @@ f64 GammaDistribution::next_f64(){
 		Y = tan(PI * U);
 		X = sqrt(2 * a - 1) * Y + a - 1;
 
-	} while (X <= 0.0f && Gen->next_f64() > some_value());
+	} while (X <= 0.0f || Gen->next_f64() > some_value());
 
 	histo->add(X);
 	return X;
