@@ -34,10 +34,10 @@ func test_run_int8() {
     t_4 := test_int8_division()
 
 
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "+", "int8", 1 / t_1 * 10.0, string_linear(t_1 * 25 / t_1), t_1 * 100 / t_1)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "-", "int8", 1 / t_2 * 10.0, string_linear(t_1 * 25 / t_2), t_1 * 100 / t_2)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "*", "int8", 1 / t_3 * 10.0, string_linear(t_1 * 25 / t_3), t_1 * 100 / t_3)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "/", "int8", 1 / t_4 * 10.0, string_linear(t_1 * 25 / t_4), t_1 * 100 / t_4)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "+", "int8", 1 / t_1 * 10.0, string_linear(t_1 * 25 / t_1), t_1 * 100 / t_1)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "-", "int8", 1 / t_2 * 10.0, string_linear(t_1 * 25 / t_2), t_1 * 100 / t_2)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "*", "int8", 1 / t_3 * 10.0, string_linear(t_1 * 25 / t_3), t_1 * 100 / t_3)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "/", "int8", 1 / t_4 * 10.0, string_linear(t_1 * 25 / t_4), t_1 * 100 / t_4)
     fmt.Printf("\n")
 
 }
@@ -51,10 +51,10 @@ func test_run_int16() {
     t_4 := test_int16_division()
 
 
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "+", "int16", 1 / t_1 * 10.0, string_linear(t_1 * 25 / t_1), t_1 * 100 / t_1)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "-", "int16", 1 / t_2 * 10.0, string_linear(t_1 * 25 / t_2), t_1 * 100 / t_2)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "*", "int16", 1 / t_3 * 10.0, string_linear(t_1 * 25 / t_3), t_1 * 100 / t_3)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "/", "int16", 1 / t_4 * 10.0, string_linear(t_1 * 25 / t_4), t_1 * 100 / t_4)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "+", "int16", 1 / t_1 * 10.0, string_linear(t_1 * 25 / t_1), t_1 * 100 / t_1)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "-", "int16", 1 / t_2 * 10.0, string_linear(t_1 * 25 / t_2), t_1 * 100 / t_2)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "*", "int16", 1 / t_3 * 10.0, string_linear(t_1 * 25 / t_3), t_1 * 100 / t_3)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "/", "int16", 1 / t_4 * 10.0, string_linear(t_1 * 25 / t_4), t_1 * 100 / t_4)
     fmt.Printf("\n")
 
 }
@@ -68,10 +68,10 @@ func test_run_int32() {
     t_4 := test_int32_division()
 
 
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "+", "int32", 1 / t_1 * 10.0, string_linear(t_1 * 25 / t_1), t_1 * 100 / t_1)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "-", "int32", 1 / t_2 * 10.0, string_linear(t_1 * 25 / t_2), t_1 * 100 / t_2)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "*", "int32", 1 / t_3 * 10.0, string_linear(t_1 * 25 / t_3), t_1 * 100 / t_3)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "/", "int32", 1 / t_4 * 10.0, string_linear(t_1 * 25 / t_4), t_1 * 100 / t_4)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "+", "int32", 1 / t_1 * 10.0, string_linear(t_1 * 25 / t_1), t_1 * 100 / t_1)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "-", "int32", 1 / t_2 * 10.0, string_linear(t_1 * 25 / t_2), t_1 * 100 / t_2)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "*", "int32", 1 / t_3 * 10.0, string_linear(t_1 * 25 / t_3), t_1 * 100 / t_3)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "/", "int32", 1 / t_4 * 10.0, string_linear(t_1 * 25 / t_4), t_1 * 100 / t_4)
     fmt.Printf("\n")
 
 }
@@ -85,10 +85,10 @@ func test_run_int64() {
     t_4 := test_int64_division()
 
 
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "+", "int64", 1 / t_1 * 10.0, string_linear(t_1 * 25 / t_1), t_1 * 100 / t_1)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "-", "int64", 1 / t_2 * 10.0, string_linear(t_1 * 25 / t_2), t_1 * 100 / t_2)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "*", "int64", 1 / t_3 * 10.0, string_linear(t_1 * 25 / t_3), t_1 * 100 / t_3)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "/", "int64", 1 / t_4 * 10.0, string_linear(t_1 * 25 / t_4), t_1 * 100 / t_4)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "+", "int64", 1 / t_1 * 10.0, string_linear(t_1 * 25 / t_1), t_1 * 100 / t_1)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "-", "int64", 1 / t_2 * 10.0, string_linear(t_1 * 25 / t_2), t_1 * 100 / t_2)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "*", "int64", 1 / t_3 * 10.0, string_linear(t_1 * 25 / t_3), t_1 * 100 / t_3)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "/", "int64", 1 / t_4 * 10.0, string_linear(t_1 * 25 / t_4), t_1 * 100 / t_4)
     fmt.Printf("\n")
 
 }
@@ -102,10 +102,10 @@ func test_run_float32() {
     t_4 := test_float32_division()
 
 
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "+", "float32", 1 / t_1 * 10.0, string_linear(t_1 * 25 / t_1), t_1 * 100 / t_1)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "-", "float32", 1 / t_2 * 10.0, string_linear(t_1 * 25 / t_2), t_1 * 100 / t_2)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "*", "float32", 1 / t_3 * 10.0, string_linear(t_1 * 25 / t_3), t_1 * 100 / t_3)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "/", "float32", 1 / t_4 * 10.0, string_linear(t_1 * 25 / t_4), t_1 * 100 / t_4)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "+", "float32", 1 / t_1 * 10.0, string_linear(t_1 * 25 / t_1), t_1 * 100 / t_1)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "-", "float32", 1 / t_2 * 10.0, string_linear(t_1 * 25 / t_2), t_1 * 100 / t_2)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "*", "float32", 1 / t_3 * 10.0, string_linear(t_1 * 25 / t_3), t_1 * 100 / t_3)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "/", "float32", 1 / t_4 * 10.0, string_linear(t_1 * 25 / t_4), t_1 * 100 / t_4)
     fmt.Printf("\n")
 
 }
@@ -119,10 +119,10 @@ func test_run_float64() {
     t_4 := test_float64_division()
 
 
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "+", "float64", 1 / t_1 * 10.0, string_linear(t_1 * 25 / t_1), t_1 * 100 / t_1)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "-", "float64", 1 / t_2 * 10.0, string_linear(t_1 * 25 / t_2), t_1 * 100 / t_2)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "*", "float64", 1 / t_3 * 10.0, string_linear(t_1 * 25 / t_3), t_1 * 100 / t_3)
-    fmt.Printf("%s | %8s | %8.3fM | %35s | %8.3f%% \n",  "/", "float64", 1 / t_4 * 10.0, string_linear(t_1 * 25 / t_4), t_1 * 100 / t_4)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "+", "float64", 1 / t_1 * 10.0, string_linear(t_1 * 25 / t_1), t_1 * 100 / t_1)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "-", "float64", 1 / t_2 * 10.0, string_linear(t_1 * 25 / t_2), t_1 * 100 / t_2)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "*", "float64", 1 / t_3 * 10.0, string_linear(t_1 * 25 / t_3), t_1 * 100 / t_3)
+    fmt.Printf("%s | %8s | %8.3fM | %32s | %8.3f%%\n",  "/", "float64", 1 / t_4 * 10.0, string_linear(t_1 * 25 / t_4), t_1 * 100 / t_4)
     fmt.Printf("\n")
 
 }
