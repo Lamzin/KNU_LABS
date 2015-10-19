@@ -8,13 +8,18 @@ private:
     std::vector<int> number;
     int base, signum;
 
+
     void ToBigInteger(const std::string &str);
     bool absoluteCompareLesser(const BigInteger &right_number) const;
 
+
+    void AddWithoutChecking(const BigInteger &right_number);
+    void SubtractWithoutChecking(const BigInteger &right_number, bool compareResult);
+
 public:
-    BigInteger(int Base = 16);
-    BigInteger(const BigInteger &bigInt, int Base = 16);
-    BigInteger(const std::string &str, int Base = 16);
+    BigInteger(int Base = 256);
+    BigInteger(const BigInteger &bigInt, int Base = 256);
+    BigInteger(const std::string &str, int Base = 256);
   
   
     int Size() const;

@@ -14,11 +14,12 @@ int main(){
 
     BigInteger A(a);
     BigInteger B(b);
-    A.Subtract(B);
-    //BigInteger C = A - B;
+    //A.Subtract(B);
+    BigInteger C = A * B;
 
 
-    cout << endl << A.ToString() << endl;
+    //cout << endl << A.ToString() << endl;
+    cout << endl << C.ToString() << endl;
 
     cin.get();
     cin.get();

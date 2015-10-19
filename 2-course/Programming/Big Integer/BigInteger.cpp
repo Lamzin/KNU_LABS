@@ -9,7 +9,10 @@ BigInteger::BigInteger(int Base) : base(Base), signum(1){}
 BigInteger::BigInteger(const BigInteger &bigInt, int Base){
     base = Base;
     if (Base != bigInt.Base()) ToBigInteger(bigInt.ToString());
-    else number = std::vector<int>(bigInt.ToArray());
+    else{
+        signum = bigInt.Signum();
+        number = std::vector<int>(bigInt.ToArray());
+    }
 }
 
 
@@ -127,12 +130,14 @@ void BigInteger::ShiftRight(int n){
 
 
 bool BigInteger::absoluteCompareLesser(const BigInteger &right_number) const {
+    // 1 if left_operand <= right_operand else 0
     if (number.size() != right_number.Size()) return number.size() < right_number.Size();
 
     auto right_arr = right_number.ToArray();
 
-    for (int i = number.size() - 1; i >= 0; i--)
-    if (number[i] != right_arr[i]) return number[i] < right_arr[i];
+    for (int i = number.size() - 1; i >= 0; i--){
+        if (number[i] != right_arr[i]) return number[i] < right_arr[i];
+    }
 
     return false;
 }
@@ -140,61 +145,73 @@ bool BigInteger::absoluteCompareLesser(const BigInteger &right_number) const {
 
 void BigInteger::Add(const BigInteger &right_number){
     if (signum * right_number.Signum() == 1){
-        auto right_arr = right_number.ToArray();
-        int sz = std::max(number.size(), right_arr.size()), current = 0;
-
-        for (int i = 0; i < sz; i++){
-            if (i < right_arr.size()) current += right_arr[i];
-            
-            if (i < number.size()){
-                current += number[i];
-                number[i] = current % base;
-            }
-            else number.push_back(current % base);
-
-            current /= base;
-        }
-
-        while (current){
-            number.push_back(current % base);
-            current /= base;
-        }
-
+        //signum don't change
+        AddWithoutChecking(right_number);
     }
     else{
-        this->Subtract(right_number);
+        bool cmp = absoluteCompareLesser(right_number);
+        
+        signum = (cmp) ? right_number.Signum() : signum;
+        SubtractWithoutChecking(right_number, cmp);
     }
 }
 
 
 void BigInteger::Subtract(const BigInteger &right_number){
-    if (signum * right_number.Signum() == -1){
-        auto right_arr = right_number.ToArray();
+    if (signum * right_number.Signum() == 1){
+        bool cmp = absoluteCompareLesser(right_number);
         
-        if (absoluteCompareLesser(right_number)){
-            signum *= -1;
-            number.resize(right_arr.size(), 0);
-
-            int current = 0;
-            for (int i = 0; i < right_arr.size() || current; i++){
-                number[i] = right_arr[i] - current - number[i];
-                current = number[i] < 0;
-                if (current) number[i] += base;
-            }
-        }
-        else{
-            int current = 0;
-            for (int i = 0; i < right_arr.size() || current; i++){
-                number[i] -= current + (i < right_arr.size() ? right_arr[i] : 0);
-                current = number[i] < 0;
-                if (current) number[i] += base;
-            }
-        }
-
-        while (number.size() > 1 && number.back() == 0) number.pop_back();
+        signum = (cmp) ? -right_number.Signum() : signum;
+        SubtractWithoutChecking(right_number, cmp);
     }
     else{
-        this->Add(right_number);
+        //signum don't change
+        AddWithoutChecking(right_number);
+    }
+}
+
+
+void BigInteger::AddWithoutChecking(const BigInteger &right_number){
+    auto right_arr = right_number.ToArray();
+    int sz = std::max(number.size(), right_arr.size()), current = 0;
+
+    for (int i = 0; i < sz; i++){
+        if (i < right_arr.size()) current += right_arr[i];
+
+        if (i < number.size()){
+            current += number[i];
+            number[i] = current % base;
+        }
+        else number.push_back(current % base);
+
+        current /= base;
+    }
+
+    while (current){
+        number.push_back(current % base);
+        current /= base;
+    }
+}
+
+
+void BigInteger::SubtractWithoutChecking(const BigInteger &right_number, bool compareResult){
+    auto right_arr = right_number.ToArray();
+    int current = 0;
+
+    if (compareResult){
+        number.resize(right_arr.size(), 0);
+        for (int i = 0; i < right_arr.size() || current; i++){
+            number[i] = right_arr[i] - current - number[i];
+            current = number[i] < 0;
+            if (current) number[i] += base;
+        }
+    }
+    else{
+        for (int i = 0; i < right_arr.size() || current; i++){
+            number[i] -= current + (i < right_arr.size() ? right_arr[i] : 0);
+            current = number[i] < 0;
+            if (current) number[i] += base;
+        }
     }
 }
 
