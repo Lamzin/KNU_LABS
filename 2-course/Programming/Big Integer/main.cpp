@@ -2,6 +2,7 @@
 #include <string>
 
 #include "BigInteger.h"
+#include "BigIntegerKaratsuba.h"
 
 
 using namespace std;
@@ -14,15 +15,20 @@ int main(){
 
     BigInteger A(a);
     BigInteger B(b);
-    //A.Subtract(B);
-    BigInteger C = A * B;
+
+    auto tmp = A - B;
+    cout << "TMP = " << tmp.ToString() << endl;
 
 
-    //cout << endl << A.ToString() << endl;
-    cout << endl << C.ToString() << endl;
+    BigIntegerKaratsuba AA(a);
+    BigIntegerKaratsuba BB(b);
+
+
+    cout << (A*B).ToString() << endl;
+    cout << (AA*BB).ToString() << endl;
+
 
     cin.get();
     cin.get();
-
 
 }

@@ -49,6 +49,7 @@ void BigInteger::ToBigInteger(const std::string &str){
         buffer.swap(buffer_tmp);
     }
 
+    while (number.size() && number.back() == 0) number.pop_back();
 }
 
 
@@ -69,6 +70,16 @@ int BigInteger::Base() const{
 
 int BigInteger::Signum() const{
     return signum;
+}
+
+
+void BigInteger::SignumChange(){
+    signum *= -1;
+}
+
+
+void BigInteger::SignumAbs(){
+    signum = 1;
 }
 
 
@@ -103,7 +114,7 @@ std::string BigInteger::ToString() const{
 
 
 void BigInteger::ShiftLeft(int n){
-    if (n < 0) return;
+    if (n < 0 || number.size() == 0 || (number.size() == 1 && number[0] == 0)) return;
     int size_old = (int)number.size();
 
     number.resize(size_old + n);
@@ -117,7 +128,8 @@ void BigInteger::ShiftLeft(int n){
 void BigInteger::ShiftRight(int n){
     if (n < 0) return;
     if (n >= (int)number.size()){
-        number.resize(0);
+        signum = 1;
+        number.clear();
         return;
     }
 
@@ -126,6 +138,12 @@ void BigInteger::ShiftRight(int n){
     }
 
     number.resize((int)number.size() - n); 
+}
+
+
+void BigInteger::ModuleByBase(int n){
+    if (n < number.size()) number.resize(n);
+    while (number.size() && number.back() == 0) number.pop_back(); // because {1 0 0 0 0 2 3} -> {1 0 0} -> {1} - NEED!!!
 }
 
 
@@ -191,28 +209,34 @@ void BigInteger::AddWithoutChecking(const BigInteger &right_number){
         number.push_back(current % base);
         current /= base;
     }
+
+    while (number.size() && number.back() == 0) number.pop_back();
 }
 
 
 void BigInteger::SubtractWithoutChecking(const BigInteger &right_number, bool compareResult){
     auto right_arr = right_number.ToArray();
+    auto tmp1 = number;
+    auto tmp2 = right_number.ToArray();
     int current = 0;
 
-    if (compareResult){
+    if (compareResult){//if a < b
         number.resize(right_arr.size(), 0);
-        for (int i = 0; i < right_arr.size() || current; i++){
+        for (int i = 0; i < right_arr.size(); i++){
             number[i] = right_arr[i] - current - number[i];
             current = number[i] < 0;
             if (current) number[i] += base;
         }
     }
-    else{
+    else{// if a >= b
         for (int i = 0; i < right_arr.size() || current; i++){
             number[i] -= current + (i < right_arr.size() ? right_arr[i] : 0);
             current = number[i] < 0;
             if (current) number[i] += base;
         }
     }
+
+    while (number.size() && number.back() == 0) number.pop_back();
 }
 
 
@@ -228,10 +252,9 @@ void BigInteger::Multiply(const BigInteger &right_number){
         }
     }
     
-    while (result.size() > 0 && result.back() == 0) result.pop_back();
-
     signum = signum * right_number.Signum();
     number.swap(result);
+    while (number.size() && number.back() == 0) number.pop_back();
 }
 
 
@@ -271,6 +294,7 @@ BigInteger& BigInteger::operator*(const BigInteger &bigInt){
 
 BigInteger& BigInteger::operator = (const BigInteger &bigInt){
     base = bigInt.Base();
+    signum = bigInt.Signum();
     number = std::vector<int>(bigInt.ToArray());
 
     return *this;

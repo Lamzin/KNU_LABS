@@ -4,7 +4,7 @@
 #include <string>
 
 class BigInteger{
-private:
+protected:
     std::vector<int> number;
     int base, signum;
 
@@ -25,6 +25,8 @@ public:
     int Size() const;
     int Base() const;
     int Signum() const;
+    void SignumChange();
+    void SignumAbs();
 
 
     std::string ToString() const;
@@ -33,7 +35,7 @@ public:
 
     void ShiftLeft(int n);
     void ShiftRight(int n);
-
+    void ModuleByBase(int n);
 
     BigInteger& operator<<(int n) const;
     BigInteger& operator>>(int n) const;
@@ -41,7 +43,7 @@ public:
 
     void Add(const BigInteger &right_number);
     void Subtract(const BigInteger &right_number);
-    void virtual Multiply(const BigInteger &right_number);
+    virtual void Multiply(const BigInteger &right_number);
     //void virtual Divide(const BigInteger &right_number);
 
 
