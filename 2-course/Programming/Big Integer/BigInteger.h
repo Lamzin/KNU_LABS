@@ -17,9 +17,10 @@ protected:
     void SubtractWithoutChecking(const BigInteger &right_number, bool compareResult);
 
 public:
-    BigInteger(int Base = 256);
-    BigInteger(const BigInteger &bigInt, int Base = 256);
-    BigInteger(const std::string &str, int Base = 256);
+    BigInteger(int Base = 16384);
+    BigInteger(const std::vector<int> &vect, int Base = 16384);
+    BigInteger(const BigInteger &bigInt, int Base = 16384);
+    BigInteger(const std::string &str, int Base = 16384);
   
   
     int Size() const;
@@ -50,7 +51,13 @@ public:
     BigInteger& operator=(const BigInteger &bigInt);
     BigInteger& operator+(const BigInteger &bigInt) const;
     BigInteger& operator-(const BigInteger &bigInt) const;
-    virtual BigInteger& operator*(const BigInteger &bigInt);
+    virtual BigInteger& operator*(const BigInteger &bigInt) const;
     //virtual BigInteger& operator/(const BigInteger &bigInt);
+
+
+    void MultiplyInt(int x);
+    void DivideInt(int x);
+    virtual BigInteger& operator*(int x) const;
+    virtual BigInteger& operator/(int x) const;
 
 };

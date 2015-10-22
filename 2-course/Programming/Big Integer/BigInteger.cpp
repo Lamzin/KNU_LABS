@@ -1,9 +1,20 @@
 #include <algorithm>
 
+
 #include "BigInteger.h"
 
 
 BigInteger::BigInteger(int Base) : base(Base), signum(1){}
+
+
+BigInteger::BigInteger(const std::vector<int> &vect, int Base){
+    base = Base;
+    signum = 1;
+    number = vect;
+
+    for (auto it = number.begin(); it != number.end(); it++) *it %= base;
+    while (number.size() && number.back() == 0) number.pop_back();
+}
 
 
 BigInteger::BigInteger(const BigInteger &bigInt, int Base){
@@ -11,7 +22,7 @@ BigInteger::BigInteger(const BigInteger &bigInt, int Base){
     if (Base != bigInt.Base()) ToBigInteger(bigInt.ToString());
     else{
         signum = bigInt.Signum();
-        number = std::vector<int>(bigInt.ToArray());
+        number = std::vector<int>(bigInt.ToArray().begin(), bigInt.ToArray().end());
     }
 }
 
@@ -84,8 +95,10 @@ void BigInteger::SignumAbs(){
 
 
 std::string BigInteger::ToString() const{
+    if (number.size() == 0) return "0";
+    
     std::string result;
-    std::vector<int> buffer(number), buffer_tmp;
+    std::vector<int> buffer = number, buffer_tmp;
 
     std::reverse(buffer.begin(), buffer.end());
     while (buffer.size()){
@@ -137,7 +150,8 @@ void BigInteger::ShiftRight(int n){
         number[i - n] = number[i];
     }
 
-    number.resize((int)number.size() - n); 
+    number.resize((int)number.size() - n);
+    while (number.size() && number.back() == 0) number.pop_back();
 }
 
 
@@ -285,7 +299,7 @@ BigInteger& BigInteger::operator - (const BigInteger &bigInt) const{
 }
 
 
-BigInteger& BigInteger::operator*(const BigInteger &bigInt){
+BigInteger& BigInteger::operator*(const BigInteger &bigInt) const{
     BigInteger *result = new BigInteger(*this);
     result->Multiply(bigInt);
     return *result;
@@ -295,7 +309,58 @@ BigInteger& BigInteger::operator*(const BigInteger &bigInt){
 BigInteger& BigInteger::operator = (const BigInteger &bigInt){
     base = bigInt.Base();
     signum = bigInt.Signum();
-    number = std::vector<int>(bigInt.ToArray());
+    number = std::vector<int>(bigInt.ToArray().begin(), bigInt.ToArray().end());
 
     return *this;
+}
+
+
+void BigInteger::MultiplyInt(int x){
+    if (x == 0){
+        number.clear();
+        signum = 1;
+        return;
+    }
+    
+    int next = 0;
+    for (auto it = number.begin(); it != number.end(); it++){
+        next += *it * x;
+        *it = next % base;
+        next /= base;
+    }
+    while (next){
+        number.push_back(next);
+        next /= base;
+    }
+
+    while (number.size() && number.back() == 0) number.pop_back();
+}
+
+
+void BigInteger::DivideInt(int x){
+    if (x == 0) return;
+
+    std::vector<int> arr;
+    int carry = 0;
+    for (int i = number.size() - 1; i >= 0 ; i--){
+        carry = number[i] + carry * base;
+        number[i] = carry / x;
+        carry = carry % x;
+    }
+
+    while (number.size() && number.back() == 0) number.pop_back();
+}
+
+
+BigInteger& BigInteger::operator*(int x) const{
+    BigInteger *result = new BigInteger(*this);
+    result->MultiplyInt(x);
+    return *result;
+}
+
+
+BigInteger& BigInteger::operator/(int x) const{
+    BigInteger *result = new BigInteger(*this);
+    result->DivideInt(x);
+    return *result;
 }

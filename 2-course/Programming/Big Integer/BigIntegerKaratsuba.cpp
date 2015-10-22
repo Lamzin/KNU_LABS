@@ -1,4 +1,9 @@
+//Knuth 1977 RUS volume 2 page 314
+//Knuth 1997 ENG volume 2 page 295
+
+
 #include <algorithm>
+#include <vector>
 
 
 #include "BigInteger.h"
@@ -6,22 +11,31 @@
 
 
 BigIntegerKaratsuba::BigIntegerKaratsuba(int Base) : BigInteger(Base){}
+
+
+BigIntegerKaratsuba::BigIntegerKaratsuba(const std::vector<int> &vect, int Base) : BigInteger(vect, Base){}
+
+
 BigIntegerKaratsuba::BigIntegerKaratsuba(const BigInteger &bigInt, int Base) : BigInteger(bigInt, Base){}
+
+
 BigIntegerKaratsuba::BigIntegerKaratsuba(const std::string &str, int Base) : BigInteger(str, Base){}
 
-//Knuth 1977 RUS volume 2 page 314
-//Knuth 1997 ENG volume 2 page 295
+
 void BigIntegerKaratsuba::Multiply(const BigIntegerKaratsuba &right_number){
     int n = std::max(this->Size(), right_number.Size()) / 2;
     int m = std::min(this->Size(), right_number.Size());
-    if (this->Size() == 1 && right_number.Size() == 1){ // because RUNTIME if (n < 1)
-        this->BigInteger::Multiply(right_number);
-        return;
-    }
-    else if (m == 0){
+
+    if (m == 0){
         this->number.clear();
         return;
     }
+    //if (this->Size() == 1 && right_number.Size() == 1){ // because RUNTIME if (n < 1)
+    else if (this->Size() + right_number.Size() < 300 || m < 100){ // because RUNTIME if (n < 1)
+        this->BigInteger::Multiply(right_number);
+        return;
+    }
+    
 
     int signum_result = this->signum * right_number.Signum();
 
@@ -66,8 +80,15 @@ void BigIntegerKaratsuba::Multiply(const BigIntegerKaratsuba &right_number){
 }
 
 
-BigIntegerKaratsuba& BigIntegerKaratsuba::operator*(const BigIntegerKaratsuba &bigInt){
+BigIntegerKaratsuba& BigIntegerKaratsuba::operator*(const BigIntegerKaratsuba &bigInt) const{
     BigIntegerKaratsuba *result = new BigIntegerKaratsuba(*this);
     result->Multiply(bigInt);
+    return *result;
+}
+
+
+BigIntegerKaratsuba& BigIntegerKaratsuba::operator*(int x) const{
+    BigIntegerKaratsuba *result = new BigIntegerKaratsuba(*this);
+    result->MultiplyInt(x);
     return *result;
 }
