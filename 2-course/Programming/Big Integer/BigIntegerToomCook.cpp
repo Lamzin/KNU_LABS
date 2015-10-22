@@ -9,21 +9,21 @@
 #include "BigIntegerToomCook.h"
 
 
-BigIntegerToomCook::BigIntegerToomCook(int Base) : BigInteger(Base){}
+BigIntegerToomCook::BigIntegerToomCook(ll Base) : BigInteger(Base){}
 
 
-BigIntegerToomCook::BigIntegerToomCook(const std::vector<int> &vect, int Base) : BigInteger(vect, Base){}
+BigIntegerToomCook::BigIntegerToomCook(const vll &vect, ll Base) : BigInteger(vect, Base){}
 
 
-BigIntegerToomCook::BigIntegerToomCook(const BigInteger &bigInt, int Base) : BigInteger(bigInt, Base){}
+BigIntegerToomCook::BigIntegerToomCook(const BigInteger &bigInt, ll Base) : BigInteger(bigInt, Base){}
 
 
-BigIntegerToomCook::BigIntegerToomCook(const std::string &str, int Base) : BigInteger(str, Base){}
+BigIntegerToomCook::BigIntegerToomCook(const std::string &str, ll Base) : BigInteger(str, Base){}
 
 
 void BigIntegerToomCook::Multiply(const BigIntegerToomCook &right_number){
-    int n = std::max(this->Size(), right_number.Size()) / 3;
-    int m = std::min(this->Size(), right_number.Size());
+    ll n = std::max(this->Size(), right_number.Size()) / 3;
+    ll m = std::min(this->Size(), right_number.Size());
 
     if (m == 0){
         number.clear();
@@ -190,7 +190,7 @@ BigIntegerToomCook& BigIntegerToomCook::operator*(const BigIntegerToomCook &bigI
 }
 
 
-BigIntegerToomCook& BigIntegerToomCook::operator*(int x) const{
+BigIntegerToomCook& BigIntegerToomCook::operator*(ll x) const{
     BigIntegerToomCook *result = new BigIntegerToomCook(*this);
     result->MultiplyInt(x);
     return *result;

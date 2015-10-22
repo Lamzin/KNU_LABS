@@ -11,14 +11,14 @@
 
 class BigIntegerToomCook : public BigInteger{
 public:
-    BigIntegerToomCook(int Base);
-    BigIntegerToomCook(const std::vector<int> &vect, int Base);
-    BigIntegerToomCook(const BigInteger &bigInt, int Base);
-    BigIntegerToomCook(const std::string &str, int Base);
+    BigIntegerToomCook(ll Base);
+    BigIntegerToomCook(const vll &vect, ll Base);
+    BigIntegerToomCook(const BigInteger &bigInt, ll Base);
+    BigIntegerToomCook(const std::string &str, ll Base);
 
     virtual void Multiply(const BigIntegerToomCook &right_number);
 
     virtual BigIntegerToomCook& operator*(const BigIntegerToomCook &bigInt) const;
 
-    virtual BigIntegerToomCook& operator*(int x) const;
+    virtual BigIntegerToomCook& operator*(ll x) const;
 };
