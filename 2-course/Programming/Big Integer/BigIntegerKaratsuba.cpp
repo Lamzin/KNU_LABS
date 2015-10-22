@@ -5,26 +5,26 @@
 #include <algorithm>
 #include <vector>
 
-
+#include "config.h"
 #include "BigInteger.h"
 #include "BigIntegerKaratsuba.h"
 
 
-BigIntegerKaratsuba::BigIntegerKaratsuba(int Base) : BigInteger(Base){}
+BigIntegerKaratsuba::BigIntegerKaratsuba(ll Base) : BigInteger(Base){}
 
 
-BigIntegerKaratsuba::BigIntegerKaratsuba(const std::vector<int> &vect, int Base) : BigInteger(vect, Base){}
+BigIntegerKaratsuba::BigIntegerKaratsuba(const vll &vect, ll Base) : BigInteger(vect, Base){}
 
 
-BigIntegerKaratsuba::BigIntegerKaratsuba(const BigInteger &bigInt, int Base) : BigInteger(bigInt, Base){}
+BigIntegerKaratsuba::BigIntegerKaratsuba(const BigInteger &bigInt, ll Base) : BigInteger(bigInt, Base){}
 
 
-BigIntegerKaratsuba::BigIntegerKaratsuba(const std::string &str, int Base) : BigInteger(str, Base){}
+BigIntegerKaratsuba::BigIntegerKaratsuba(const std::string &str, ll Base) : BigInteger(str, Base){}
 
 
 void BigIntegerKaratsuba::Multiply(const BigIntegerKaratsuba &right_number){
-    int n = std::max(this->Size(), right_number.Size()) / 2;
-    int m = std::min(this->Size(), right_number.Size());
+    ll n = std::max(this->Size(), right_number.Size()) / 2;
+    ll m = std::min(this->Size(), right_number.Size());
 
     if (m == 0){
         this->number.clear();
@@ -37,7 +37,7 @@ void BigIntegerKaratsuba::Multiply(const BigIntegerKaratsuba &right_number){
     }
     
 
-    int signum_result = this->signum * right_number.Signum();
+    ll signum_result = this->signum * right_number.Signum();
 
     //*this = (U1*V1 << n) + (U1*V1 << 2 * n) + (U0*V0 << n) + (U0*V0) + ((U1 - U0) * (V0 - V1) << n);
     //Let's execute next steps to save some memory
@@ -87,7 +87,7 @@ BigIntegerKaratsuba& BigIntegerKaratsuba::operator*(const BigIntegerKaratsuba &b
 }
 
 
-BigIntegerKaratsuba& BigIntegerKaratsuba::operator*(int x) const{
+BigIntegerKaratsuba& BigIntegerKaratsuba::operator*(ll x) const{
     BigIntegerKaratsuba *result = new BigIntegerKaratsuba(*this);
     result->MultiplyInt(x);
     return *result;

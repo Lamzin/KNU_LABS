@@ -11,15 +11,15 @@
 
 class BigIntegerKaratsuba : public BigInteger{
 public:
-    BigIntegerKaratsuba(int Base);
-    BigIntegerKaratsuba(const std::vector<int> &vect, int Base);
-    BigIntegerKaratsuba(const BigInteger &bigInt, int Base);
-    BigIntegerKaratsuba(const std::string &str, int Base);
+    BigIntegerKaratsuba(ll Base);
+    BigIntegerKaratsuba(const vll &vect, ll Base);
+    BigIntegerKaratsuba(const BigInteger &bigInt, ll Base);
+    BigIntegerKaratsuba(const std::string &str, ll Base);
     
     virtual void Multiply(const BigIntegerKaratsuba &right_number);
     
     virtual BigIntegerKaratsuba& operator*(const BigIntegerKaratsuba &bigInt) const;
 
-    virtual BigIntegerKaratsuba& operator*(int x) const;
+    virtual BigIntegerKaratsuba& operator*(ll x) const;
 
 };
