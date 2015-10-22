@@ -1,7 +1,12 @@
 #pragma once
 
+
 #include <vector>
 #include <string>
+
+
+#include "config.h"
+
 
 class BigInteger{
 protected:
@@ -17,10 +22,10 @@ protected:
     void SubtractWithoutChecking(const BigInteger &right_number, bool compareResult);
 
 public:
-    BigInteger(int Base = 16384);
-    BigInteger(const std::vector<int> &vect, int Base = 16384);
-    BigInteger(const BigInteger &bigInt, int Base = 16384);
-    BigInteger(const std::string &str, int Base = 16384);
+    BigInteger(int Base);
+    BigInteger(const std::vector<int> &vect, int Base);
+    BigInteger(const BigInteger &bigInt, int Base);
+    BigInteger(const std::string &str, int Base);
   
   
     int Size() const;

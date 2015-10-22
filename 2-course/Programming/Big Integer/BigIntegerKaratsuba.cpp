@@ -52,7 +52,7 @@ void BigIntegerKaratsuba::Multiply(const BigIntegerKaratsuba &right_number){
     V1.ShiftRight(n);
     V0.ModuleByBase(n);
 
-    BigIntegerKaratsuba U1V1, U0V0;
+    BigIntegerKaratsuba U1V1(BASE_KARATSUBA), U0V0(BASE_KARATSUBA);
     U1V1 = U1;
     U1V1.Multiply(V1);//U1V1 = U1*V1
     U0V0 = U0;

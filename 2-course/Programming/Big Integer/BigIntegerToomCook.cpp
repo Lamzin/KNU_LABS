@@ -1,3 +1,7 @@
+//http://www.mit.edu/afs.new/athena/astaff/source/src-9.0/third/gmp/doc/multiplication
+//http ://www.cryptalarm.it/ca/uploads/file/iterativeToomCookForVeryUnbalancedMultiplication.pdf
+
+
 #include <algorithm>
 
 
@@ -32,7 +36,8 @@ void BigIntegerToomCook::Multiply(const BigIntegerToomCook &right_number){
     }
 
 
-    BigIntegerToomCook X2, X1, X0, Y2, Y1, Y0, buffer;
+    BigIntegerToomCook X2(BASE_TOOM_COOK), X1(BASE_TOOM_COOK), X0(BASE_TOOM_COOK), 
+        Y2(BASE_TOOM_COOK), Y1(BASE_TOOM_COOK), Y0(BASE_TOOM_COOK), buffer(BASE_TOOM_COOK);
     buffer = *this;
     X0 = buffer;
     X0.ModuleByBase(n);
@@ -51,7 +56,8 @@ void BigIntegerToomCook::Multiply(const BigIntegerToomCook &right_number){
     Y2 = buffer;
     Y2.ShiftRight(n);
 
-    BigIntegerToomCook W0, W1, W2, W3, W4;
+    BigIntegerToomCook W0(BASE_TOOM_COOK), W1(BASE_TOOM_COOK), W2(BASE_TOOM_COOK), 
+        W3(BASE_TOOM_COOK), W4(BASE_TOOM_COOK);
 
     //W0 = X0 * Y0;
     W0 = X0;

@@ -5,15 +5,16 @@
 #include <string>
 
 
+#include "config.h"
 #include "BigInteger.h"
 
 
 class BigIntegerKaratsuba : public BigInteger{
 public:
-    BigIntegerKaratsuba(int Base = 16384);
-    BigIntegerKaratsuba(const std::vector<int> &vect, int Base = 16384);
-    BigIntegerKaratsuba(const BigInteger &bigInt, int Base = 16384);
-    BigIntegerKaratsuba(const std::string &str, int Base = 16384);
+    BigIntegerKaratsuba(int Base);
+    BigIntegerKaratsuba(const std::vector<int> &vect, int Base);
+    BigIntegerKaratsuba(const BigInteger &bigInt, int Base);
+    BigIntegerKaratsuba(const std::string &str, int Base);
     
     virtual void Multiply(const BigIntegerKaratsuba &right_number);
     

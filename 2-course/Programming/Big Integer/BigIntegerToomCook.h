@@ -5,15 +5,16 @@
 #include <string>
 
 
+#include "config.h"
 #include "BigInteger.h"
 
 
 class BigIntegerToomCook : public BigInteger{
 public:
-    BigIntegerToomCook(int Base = 16384);
-    BigIntegerToomCook(const std::vector<int> &vect, int Base = 16384);
-    BigIntegerToomCook(const BigInteger &bigInt, int Base = 16384);
-    BigIntegerToomCook(const std::string &str, int Base = 16384);
+    BigIntegerToomCook(int Base);
+    BigIntegerToomCook(const std::vector<int> &vect, int Base);
+    BigIntegerToomCook(const BigInteger &bigInt, int Base);
+    BigIntegerToomCook(const std::string &str, int Base);
 
     virtual void Multiply(const BigIntegerToomCook &right_number);
 
