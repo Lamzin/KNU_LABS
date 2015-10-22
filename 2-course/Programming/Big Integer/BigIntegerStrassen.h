@@ -11,13 +11,13 @@
 
 class BigIntegerStrassen : public BigInteger{
 private:
-    void FastFourierTransform(std::vector<std::complex<long double>> &vect, bool invert);
+    void FastFourierTransform(vcomp &vect, bool invert);
 
 public:
-    BigIntegerStrassen(int Base);
-    BigIntegerStrassen(const std::vector<int> &vect, int Base);
-    BigIntegerStrassen(const BigInteger &bigInt, int Base);
-    BigIntegerStrassen(const std::string &str, int Base);
+    BigIntegerStrassen(ll Base);
+    BigIntegerStrassen(const vll &vect, ll Base);
+    BigIntegerStrassen(const BigInteger &bigInt, ll Base);
+    BigIntegerStrassen(const std::string &str, ll Base);
     
     virtual void Multiply(const BigIntegerStrassen &right_number);
 

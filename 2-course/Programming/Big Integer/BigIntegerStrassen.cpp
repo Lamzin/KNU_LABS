@@ -13,27 +13,27 @@
 #include "BigIntegerStrassen.h"
 
 
-BigIntegerStrassen::BigIntegerStrassen(int Base) : BigInteger(Base){}
+BigIntegerStrassen::BigIntegerStrassen(ll Base) : BigInteger(Base){}
 
 
-BigIntegerStrassen::BigIntegerStrassen(const std::vector<int> &vect, int Base) : BigInteger(vect, Base){}
+BigIntegerStrassen::BigIntegerStrassen(const vll &vect, ll Base) : BigInteger(vect, Base){}
 
 
-BigIntegerStrassen::BigIntegerStrassen(const BigInteger &bigInt, int Base) : BigInteger(bigInt, Base){}
+BigIntegerStrassen::BigIntegerStrassen(const BigInteger &bigInt, ll Base) : BigInteger(bigInt, Base){}
 
 
-BigIntegerStrassen::BigIntegerStrassen(const std::string &str, int Base) : BigInteger(str, Base){}
+BigIntegerStrassen::BigIntegerStrassen(const std::string &str, ll Base) : BigInteger(str, Base){}
 
 
-void BigIntegerStrassen::FastFourierTransform(std::vector<std::complex<long double>> &vect, bool invert){
+void BigIntegerStrassen::FastFourierTransform(vcomp &vect, bool invert){
     //static long double PI = 3.14159265358979323846;
     static long double PI = 3.14159265358979323846264338327950288419716939937510L;
     
-    int n = (int)vect.size();
+    ll n = (ll)vect.size();
     if (n == 1)  return;
 
-    std::vector<std::complex<long double>> vect0(n / 2), vect1(n / 2);
-    for (int i = 0, j = 0; i<n; i += 2, ++j){
+    vcomp vect0(n / 2), vect1(n / 2);
+    for (ll i = 0, j = 0; i<n; i += 2, ++j){
         vect0[j] = vect[i];
         vect1[j] = vect[i + 1];
     }
@@ -43,7 +43,7 @@ void BigIntegerStrassen::FastFourierTransform(std::vector<std::complex<long doub
 
     long double ang = 2 * PI / n * (invert ? -1 : 1);
     std::complex<long double> w(1), wn(cos(ang), sin(ang));
-    for (int i = 0; i < n / 2; ++i) {
+    for (ll i = 0; i < n / 2; ++i) {
         vect[i] = vect0[i] + w * vect1[i];
         vect[i + n / 2] = vect0[i] - w * vect1[i];
         if (invert){
@@ -57,11 +57,11 @@ void BigIntegerStrassen::FastFourierTransform(std::vector<std::complex<long doub
 
 
 void BigIntegerStrassen::Multiply(const BigIntegerStrassen &right_number){
-    std::vector<std::complex<long double>> fa(number.begin(), number.end());
+    vcomp fa(number.begin(), number.end());
     auto right_arr = right_number.ToArray();
-    std::vector<std::complex<long double>> fb(right_arr.begin(), right_arr.end());
+    vcomp fb(right_arr.begin(), right_arr.end());
 
-    int n = 1;
+    ll n = 1;
     while (n < std::max(number.size(), right_arr.size())) n <<= 1;
     n <<= 1;
 
@@ -71,13 +71,13 @@ void BigIntegerStrassen::Multiply(const BigIntegerStrassen &right_number){
     FastFourierTransform(fa, false);
     FastFourierTransform(fb, false);
 
-    for (int i = 0; i < n; i++) fa[i] *= fb[i];
+    for (ll i = 0; i < n; i++) fa[i] *= fb[i];
     FastFourierTransform(fa, true);
     
     number.resize(n);
-    int carry = 0;
-    for (int i = 0; i < n; i++){
-        carry += int(fa[i].real() + 0.5);
+    ll carry = 0;
+    for (ll i = 0; i < n; i++){
+        carry += ll(fa[i].real() + 0.5);
         number[i] = carry % base;
         carry /= base;
     }
