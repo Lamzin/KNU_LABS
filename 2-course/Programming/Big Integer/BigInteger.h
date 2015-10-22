@@ -10,8 +10,8 @@
 
 class BigInteger{
 protected:
-    std::vector<int> number;
-    int base, signum;
+    vll number;
+    ll base, signum;
 
 
     void ToBigInteger(const std::string &str);
@@ -22,29 +22,29 @@ protected:
     void SubtractWithoutChecking(const BigInteger &right_number, bool compareResult);
 
 public:
-    BigInteger(int Base);
-    BigInteger(const std::vector<int> &vect, int Base);
-    BigInteger(const BigInteger &bigInt, int Base);
-    BigInteger(const std::string &str, int Base);
+    BigInteger(ll Base);
+    BigInteger(const vll &vect, ll Base);
+    BigInteger(const BigInteger &bigInt, ll Base);
+    BigInteger(const std::string &str, ll Base);
   
   
-    int Size() const;
-    int Base() const;
-    int Signum() const;
+    ll Size() const;
+    ll Base() const;
+    ll Signum() const;
     void SignumChange();
     void SignumAbs();
 
 
     std::string ToString() const;
-    const std::vector<int> &ToArray() const;
+    const vll &ToArray() const;
 
 
-    void ShiftLeft(int n);
-    void ShiftRight(int n);
-    void ModuleByBase(int n);
+    void ShiftLeft(ll n);
+    void ShiftRight(ll n);
+    void ModuleByBase(ll n);
 
-    BigInteger& operator<<(int n) const;
-    BigInteger& operator>>(int n) const;
+    BigInteger& operator<<(ll n) const;
+    BigInteger& operator>>(ll n) const;
 
 
     void Add(const BigInteger &right_number);
@@ -60,9 +60,9 @@ public:
     //virtual BigInteger& operator/(const BigInteger &bigInt);
 
 
-    void MultiplyInt(int x);
-    void DivideInt(int x);
-    virtual BigInteger& operator*(int x) const;
-    virtual BigInteger& operator/(int x) const;
+    void MultiplyInt(ll x);
+    void DivideInt(ll x);
+    virtual BigInteger& operator*(ll x) const;
+    virtual BigInteger& operator/(ll x) const;
 
 };

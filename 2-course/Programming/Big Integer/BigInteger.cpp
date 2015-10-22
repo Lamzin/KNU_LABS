@@ -4,10 +4,10 @@
 #include "BigInteger.h"
 
 
-BigInteger::BigInteger(int Base) : base(Base), signum(1){}
+BigInteger::BigInteger(ll Base) : base(Base), signum(1){}
 
 
-BigInteger::BigInteger(const std::vector<int> &vect, int Base){
+BigInteger::BigInteger(const vll &vect, ll Base){
     base = Base;
     signum = 1;
     number = vect;
@@ -17,17 +17,17 @@ BigInteger::BigInteger(const std::vector<int> &vect, int Base){
 }
 
 
-BigInteger::BigInteger(const BigInteger &bigInt, int Base){
+BigInteger::BigInteger(const BigInteger &bigInt, ll Base){
     base = Base;
     if (Base != bigInt.Base()) ToBigInteger(bigInt.ToString());
     else{
         signum = bigInt.Signum();
-        number = std::vector<int>(bigInt.ToArray().begin(), bigInt.ToArray().end());
+        number = vll(bigInt.ToArray().begin(), bigInt.ToArray().end());
     }
 }
 
 
-BigInteger::BigInteger(const std::string &str, int Base){
+BigInteger::BigInteger(const std::string &str, ll Base){
     base = Base;
     ToBigInteger(str);
 }
@@ -46,8 +46,8 @@ void BigInteger::ToBigInteger(const std::string &str){
     while (buffer.length()){
         buffer_tmp.clear();
     
-        int current = 0, first = 0;
-        for (int i = 0; i < buffer.length(); i++){
+        ll current = 0, first = 0;
+        for (ll i = 0; i < buffer.length(); i++){
             current = current * 10 + buffer[i] - '0';
             if (!first && current >= base) first = 1;
             if (first){
@@ -64,22 +64,22 @@ void BigInteger::ToBigInteger(const std::string &str){
 }
 
 
-const std::vector<int> &BigInteger::ToArray() const {
+const vll &BigInteger::ToArray() const {
     return number;
 }
 
 
-int BigInteger::Size() const{
+ll BigInteger::Size() const{
     return number.size();
 }
 
 
-int BigInteger::Base() const{
+ll BigInteger::Base() const{
     return base;
 }
 
 
-int BigInteger::Signum() const{
+ll BigInteger::Signum() const{
     return signum;
 }
 
@@ -98,14 +98,14 @@ std::string BigInteger::ToString() const{
     if (number.size() == 0) return "0";
     
     std::string result;
-    std::vector<int> buffer = number, buffer_tmp;
+    vll buffer = number, buffer_tmp;
 
     std::reverse(buffer.begin(), buffer.end());
     while (buffer.size()){
         buffer_tmp.clear();
 
-        int current = 0, first = 0;
-        for (int i = 0; i < buffer.size(); i++){
+        ll current = 0, first = 0;
+        for (ll i = 0; i < buffer.size(); i++){
             current = current * base + buffer[i];
             if (!first && current >= 10) first = 1;
             if (first){
@@ -126,36 +126,36 @@ std::string BigInteger::ToString() const{
 }
 
 
-void BigInteger::ShiftLeft(int n){
+void BigInteger::ShiftLeft(ll n){
     if (n < 0 || number.size() == 0 || (number.size() == 1 && number[0] == 0)) return;
-    int size_old = (int)number.size();
+    ll size_old = (ll)number.size();
 
     number.resize(size_old + n);
-    for (int i = size_old - 1; i >= 0; i--){
+    for (ll i = size_old - 1; i >= 0; i--){
         number[i + n] = number[i];
         number[i] = 0;
     }
 }
 
 
-void BigInteger::ShiftRight(int n){
+void BigInteger::ShiftRight(ll n){
     if (n < 0) return;
-    if (n >= (int)number.size()){
+    if (n >= (ll)number.size()){
         signum = 1;
         number.clear();
         return;
     }
 
-    for (int i = n; i < number.size(); i++){
+    for (ll i = n; i < number.size(); i++){
         number[i - n] = number[i];
     }
 
-    number.resize((int)number.size() - n);
+    number.resize((ll)number.size() - n);
     while (number.size() && number.back() == 0) number.pop_back();
 }
 
 
-void BigInteger::ModuleByBase(int n){
+void BigInteger::ModuleByBase(ll n){
     if (n < number.size()) number.resize(n);
     while (number.size() && number.back() == 0) number.pop_back(); // because {1 0 0 0 0 2 3} -> {1 0 0} -> {1} - NEED!!!
 }
@@ -164,10 +164,11 @@ void BigInteger::ModuleByBase(int n){
 bool BigInteger::absoluteCompareLesser(const BigInteger &right_number) const {
     // 1 if left_operand <= right_operand else 0
     if (number.size() != right_number.Size()) return number.size() < right_number.Size();
+    if (number.size() == 0) return false;
 
     auto right_arr = right_number.ToArray();
 
-    for (int i = number.size() - 1; i >= 0; i--){
+    for (ll i = number.size() - 1; i >= 0; i--){
         if (number[i] != right_arr[i]) return number[i] < right_arr[i];
     }
 
@@ -205,9 +206,9 @@ void BigInteger::Subtract(const BigInteger &right_number){
 
 void BigInteger::AddWithoutChecking(const BigInteger &right_number){
     auto right_arr = right_number.ToArray();
-    int sz = std::max(number.size(), right_arr.size()), current = 0;
+    ll sz = std::max(number.size(), right_arr.size()), current = 0;
 
-    for (int i = 0; i < sz; i++){
+    for (ll i = 0; i < sz; i++){
         if (i < right_arr.size()) current += right_arr[i];
 
         if (i < number.size()){
@@ -232,18 +233,18 @@ void BigInteger::SubtractWithoutChecking(const BigInteger &right_number, bool co
     auto right_arr = right_number.ToArray();
     auto tmp1 = number;
     auto tmp2 = right_number.ToArray();
-    int current = 0;
+    ll current = 0;
 
     if (compareResult){//if a < b
         number.resize(right_arr.size(), 0);
-        for (int i = 0; i < right_arr.size(); i++){
+        for (ll i = 0; i < right_arr.size(); i++){
             number[i] = right_arr[i] - current - number[i];
             current = number[i] < 0;
             if (current) number[i] += base;
         }
     }
     else{// if a >= b
-        for (int i = 0; i < right_arr.size() || current; i++){
+        for (ll i = 0; i < right_arr.size() || current; i++){
             number[i] -= current + (i < right_arr.size() ? right_arr[i] : 0);
             current = number[i] < 0;
             if (current) number[i] += base;
@@ -256,10 +257,10 @@ void BigInteger::SubtractWithoutChecking(const BigInteger &right_number, bool co
 
 void BigInteger::Multiply(const BigInteger &right_number){
     auto right_arr = right_number.ToArray();
-    std::vector<int> result(number.size() + right_arr.size(), 0);
+    vll result(number.size() + right_arr.size(), 0);
 
-    for (int i = 0; i < number.size(); i++){
-        for (int j = 0, current = 0; j < right_arr.size() || current; j++){
+    for (ll i = 0; i < number.size(); i++){
+        for (ll j = 0, current = 0; j < right_arr.size() || current; j++){
             current += result[i + j] + number[i] * (j < right_arr.size() ? right_arr[j] : 0);
             result[i + j] = current % base;
             current /= base;
@@ -272,14 +273,14 @@ void BigInteger::Multiply(const BigInteger &right_number){
 }
 
 
-BigInteger& BigInteger::operator << (int n) const {
+BigInteger& BigInteger::operator << (ll n) const {
     BigInteger *result = new BigInteger(*this);
     result->ShiftLeft(n);
     return *result;
 }
 
 
-BigInteger& BigInteger::operator>>(int n) const {
+BigInteger& BigInteger::operator>>(ll n) const {
     BigInteger *result = new BigInteger(*this);
     result->ShiftRight(n);
     return *result;
@@ -309,20 +310,20 @@ BigInteger& BigInteger::operator*(const BigInteger &bigInt) const{
 BigInteger& BigInteger::operator = (const BigInteger &bigInt){
     base = bigInt.Base();
     signum = bigInt.Signum();
-    number = std::vector<int>(bigInt.ToArray().begin(), bigInt.ToArray().end());
+    number = vll(bigInt.ToArray().begin(), bigInt.ToArray().end());
 
     return *this;
 }
 
 
-void BigInteger::MultiplyInt(int x){
+void BigInteger::MultiplyInt(ll x){
     if (x == 0){
         number.clear();
         signum = 1;
         return;
     }
     
-    int next = 0;
+    ll next = 0;
     for (auto it = number.begin(); it != number.end(); it++){
         next += *it * x;
         *it = next % base;
@@ -337,12 +338,12 @@ void BigInteger::MultiplyInt(int x){
 }
 
 
-void BigInteger::DivideInt(int x){
-    if (x == 0) return;
+void BigInteger::DivideInt(ll x){
+    if (x == 0 || number.size() == 0) return;
 
-    std::vector<int> arr;
-    int carry = 0;
-    for (int i = number.size() - 1; i >= 0 ; i--){
+    vll arr;
+    ll carry = 0;
+    for (ll i = number.size() - 1; i >= 0 ; i--){
         carry = number[i] + carry * base;
         number[i] = carry / x;
         carry = carry % x;
@@ -352,14 +353,14 @@ void BigInteger::DivideInt(int x){
 }
 
 
-BigInteger& BigInteger::operator*(int x) const{
+BigInteger& BigInteger::operator*(ll x) const{
     BigInteger *result = new BigInteger(*this);
     result->MultiplyInt(x);
     return *result;
 }
 
 
-BigInteger& BigInteger::operator/(int x) const{
+BigInteger& BigInteger::operator/(ll x) const{
     BigInteger *result = new BigInteger(*this);
     result->DivideInt(x);
     return *result;

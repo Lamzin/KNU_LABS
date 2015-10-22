@@ -9,6 +9,7 @@
 #include "BigIntegerKaratsuba.h"
 #include "BigIntegerToomCook.h"
 #include "BigIntegerStrassen.h"
+#include "BigIntegerSchonhage.h"
 
 
 using namespace std;
@@ -68,19 +69,41 @@ BigIntegerStrassen BigIntegerMultiplySpeedStrassen(const BigIntegerStrassen &lef
     return result;
 }
 
+
+BigIntegerStrassen BigIntegerMultiplySpeedSchongahe(const BigIntegerStrassen &left, const BigIntegerStrassen &right){
+    double time_begin = clock();
+
+    auto result = left;
+    result.Multiply(right);
+
+    cerr << "\nSchongahe:\n";
+    cerr << left.Size() << " * " << right.Size();
+    cerr << " -> time = " << ((double) clock() - time_begin) / CLOCKS_PER_SEC << endl;
+
+    return result;
+}
+
+
 int main(){
 
     //string a, b;
     //a = "1234";
     //b = "2341";
-    //a = string(5000, '1');
-    //b = string(330, '2');
+    //a = string(5000, '3');
+    //b = string(5000, '2');
     //
-    vector<int> a;
-    vector<int> b;
-    for (int i = 0; i < 500000; i++) a.push_back(456644);
-    for (int i = 0; i < 300000; i++) b.push_back(45004);
+    vll a;
+    vll aa;
+    vll b;
+    vll bb;
+    int len_a = 100000;
+    int len_b = 100000;
+    
+    for (int i = 0; i < len_a; i++) a.push_back(664 * 32768 + 4654);
+    for (int i = 0; i < len_a; i++) aa.push_back(4654), aa.push_back(664);
 
+    for (int i = 0; i < len_b; i++) b.push_back(228 * 32768 + 1488);
+    for (int i = 0; i < len_b; i++) bb.push_back(1488), bb.push_back(228);
 
 
     BigInteger A(a, BASE);
@@ -92,30 +115,39 @@ int main(){
     BigIntegerToomCook AAA(a, BASE_TOOM_COOK);
     BigIntegerToomCook BBB(b, BASE_TOOM_COOK);
 
-    BigIntegerStrassen AAAA(a, BASE_STRASSEN);
-    BigIntegerStrassen BBBB(b, BASE_STRASSEN);
+    BigIntegerStrassen AAAA(aa, BASE_STRASSEN);
+    BigIntegerStrassen BBBB(bb, BASE_STRASSEN);
+
+    BigIntegerStrassen AAAAA(aa, BASE_SCHONGAHE);
+    BigIntegerStrassen BBBBB(bb, BASE_SCHONGAHE);
 
 
     cerr << "Multilpy is coming...\n";
 
     //auto resA = BigIntegerMultiplySpeedTestBase(A, B);
     auto resAA = BigIntegerMultiplySpeedTestKaratsuba(AA, BB);
-    auto resA = resAA;
-    //auto resAAA = BigIntegerMultiplySpeedTestToomCook(AAA, BBB);
+    //auto resA = resAA;
+    auto resAAA = BigIntegerMultiplySpeedTestToomCook(AAA, BBB);
     auto resAAAA = BigIntegerMultiplySpeedStrassen(AAAA, BBBB);
+    auto resAAAAA = BigIntegerMultiplySpeedSchongahe(AAAAA, BBBBB);
 
-   /* cout << "AA - A = " << resAA.ToString().compare(resA.ToString()) << endl;
-    cout << "AAA - A = " << resAAA.ToString().compare(resA.ToString()) << endl;
-    cout << "AAAA - A = " << resAAAA.ToString().compare(resA.ToString()) << endl;*/
-    cout << "AA - A = " << (resAA - resA).Size() << endl;
-    //cout << "AAA - A = " << (resAAA - resA).Size() << endl;
+
+
+    //cout << "AA - A = " << resAA.ToString().compare(resA.ToString()) << endl;
+    //cout << "AAA - A = " << resAAA.ToString().compare(resA.ToString()) << endl;
+    //cout << "AAAA - A = " << resAAAA.ToString().compare(resA.ToString()) << endl;
+    //cout << "AAAAA - A = " << resAAAAA.ToString().compare(resA.ToString()) << endl;
+    /*cout << "AA - A = " << (resAA - resA).Size() << endl;
+    cout << "AAA - A = " << (resAAA - resA).Size() << endl;
     cout << "AAAA - A = " << (resAAAA - resA).Size() << endl;
+    cout << "AAAAA - A = " << (resAAAAA - resA).Size() << endl;*/
 
 
     //cout << resA.ToString() << endl << endl;
     //cout << resAA.ToString() << endl << endl;
     //cout << resAAA.ToString() << endl << endl;
     //cout << resAAAA.ToString() << endl << endl;
+    //cout << resAAAAA.ToString() << endl << endl;
 
 
     cin.get();
