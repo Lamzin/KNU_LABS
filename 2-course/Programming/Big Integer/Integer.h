@@ -34,4 +34,8 @@ public:
     void virtual Divide(const Integer &right_number);
     virtual Integer& operator/(const Integer &right_number) const;
     virtual Integer& operator%(const Integer &right_number) const;
+    virtual Integer& operator%(const int &right_number) const;
+    virtual bool operator<(const Integer &right_number) const;
+    virtual bool operator==(const Integer &right_number) const;
+    virtual bool operator==(const ll &right_number) const;
 };

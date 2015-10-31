@@ -13,6 +13,10 @@
 #include "Integer.h"
 
 
+#include "myMath.h"
+#include "Dixon.h"
+#include "rhoPollard.h"
+
 using namespace std;
 
 
@@ -85,21 +89,41 @@ BigIntegerStrassen BigIntegerMultiplySpeedSchongahe(const BigIntegerStrassen &le
 }
 
 
-int main(){
+void print_factorization(Integer x, vector<Integer> fact){
+    cerr << x.ToString() << ": ";
+    for (int i = 0; i < fact.size(); i++) cerr << fact[i].ToString() << ", ";
+    cerr << endl;
+}
 
+void dixon_method(){
     string a, b;
-    a = "2480802755594150657124";
-    b = "545645646";
+    a = "89755";//619 29 5
 
     Integer A(a, BASE_INTEGER);
-    
-    //auto rev = A.multiplicative_inverse();
 
-    Integer B(b, BASE_INTEGER);
-    Integer C = A;
-    C = C / B;
+    Dixon Dix;
+    print_factorization(A, Dix.factorization(A));
+}
 
-    cout << C.ToString() << endl;
+
+void polard_method(){
+    string a, b;
+    a = "89755";//619 29 5
+    a = "279841";//23*23*23*23
+
+    Integer A(a, BASE_INTEGER);
+
+    rhoPollard polard;
+    print_factorization(A, polard.factorization(A));
+
+}
+
+
+int main(){
+
+    //dixon_method();
+
+    polard_method();
 
 
     //string a, b;

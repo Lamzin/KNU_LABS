@@ -94,7 +94,7 @@ std::pair<Integer, int> Integer::multiplicative_inverse() const{
         xbuf2.ShiftRight(4 * precision);
         x_new = xbuf1;
         x_new.Subtract(xbuf2);
-    } while (!cmp_equal(x, x_new) && count++ < 4 * precision);
+    } while (!cmp_equal(x, x_new) && count++ < 100 * precision);
     
 
     if (sign == -1) x_new.SignumChange();
@@ -127,4 +127,31 @@ Integer& Integer::operator%(const Integer &right_number) const{
     
     if (fractional_part->Signum() == -1) fractional_part->Add(right_number);
     return *fractional_part;
+}
+
+
+bool Integer::operator==(const Integer &right_number) const{
+    Integer sub = *this;
+    sub.Subtract(right_number);
+
+    return sub.Size() == 0;
+}
+
+
+bool Integer::operator==(const ll &right_number) const{
+    Integer right(std::to_string(right_number), BASE_INTEGER);
+    return *this == right;
+}
+
+
+bool Integer::operator<(const Integer &right_number) const{
+    auto res = right_number - *this;
+
+    return res.Signum() == 1 && res.Size();
+}
+
+
+Integer& Integer::operator%(const int &right_number) const{
+    Integer right(std::to_string(right_number), BASE_INTEGER);
+    return *this % right;
 }

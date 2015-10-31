@@ -16,5 +16,5 @@ const ll BASE_KARATSUBA     = 1073741824L;
 const ll BASE_TOOM_COOK     = 1073741824L;
 const ll BASE_STRASSEN      = 32768L;
 const ll BASE_SCHONGAHE     = 32768L;
-const ll BASE_INTEGER       = 10L;
+const ll BASE_INTEGER       = 1073741824L;
 
