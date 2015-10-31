@@ -52,11 +52,9 @@ void BigIntegerSchonhage::FastFourierTransform(vll &vect, bool invert){
 
     for (ll i = 1, j = 0; i<n; ++i) {
         ll bit = n >> 1;
-        for (; j >= bit; bit >>= 1)
-            j -= bit;
+        for (; j >= bit; bit >>= 1) j -= bit;
         j += bit;
-        if (i < j)
-            std::swap(vect[i], vect[j]);
+        if (i < j) std::swap(vect[i], vect[j]);
     }
 
     for (ll len = 2; len <= n; len <<= 1) {

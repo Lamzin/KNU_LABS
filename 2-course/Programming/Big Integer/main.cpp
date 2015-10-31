@@ -10,6 +10,7 @@
 #include "BigIntegerToomCook.h"
 #include "BigIntegerStrassen.h"
 #include "BigIntegerSchonhage.h"
+#include "Integer.h"
 
 
 using namespace std;
@@ -86,50 +87,65 @@ BigIntegerStrassen BigIntegerMultiplySpeedSchongahe(const BigIntegerStrassen &le
 
 int main(){
 
+    string a, b;
+    a = "2480802755594150657124";
+    b = "545645646";
+
+    Integer A(a, BASE_INTEGER);
+    
+    //auto rev = A.multiplicative_inverse();
+
+    Integer B(b, BASE_INTEGER);
+    Integer C = A;
+    C = C / B;
+
+    cout << C.ToString() << endl;
+
+
     //string a, b;
     //a = "1234";
     //b = "2341";
     //a = string(5000, '3');
     //b = string(5000, '2');
     //
-    vll a;
-    vll aa;
-    vll b;
-    vll bb;
-    int len_a = 100000;
-    int len_b = 100000;
-    
-    for (int i = 0; i < len_a; i++) a.push_back(664 * 32768 + 4654);
-    for (int i = 0; i < len_a; i++) aa.push_back(4654), aa.push_back(664);
+    //vll a;
+    //vll aa;
+    //vll b;
+    //vll bb;
+    //int len_a = 100000;
+    //int len_b = 100000;
+    //
+    //for (int i = 0; i < len_a; i++) a.push_back(664 * 32768 + 4654);
+    //for (int i = 0; i < len_a; i++) aa.push_back(4654), aa.push_back(664);
 
-    for (int i = 0; i < len_b; i++) b.push_back(228 * 32768 + 1488);
-    for (int i = 0; i < len_b; i++) bb.push_back(1488), bb.push_back(228);
-
-
-    BigInteger A(a, BASE);
-    BigInteger B(b, BASE);
-
-    BigIntegerKaratsuba AA(a, BASE_KARATSUBA);
-    BigIntegerKaratsuba BB(b, BASE_KARATSUBA);
-
-    BigIntegerToomCook AAA(a, BASE_TOOM_COOK);
-    BigIntegerToomCook BBB(b, BASE_TOOM_COOK);
-
-    BigIntegerStrassen AAAA(aa, BASE_STRASSEN);
-    BigIntegerStrassen BBBB(bb, BASE_STRASSEN);
-
-    BigIntegerStrassen AAAAA(aa, BASE_SCHONGAHE);
-    BigIntegerStrassen BBBBB(bb, BASE_SCHONGAHE);
+    //for (int i = 0; i < len_b; i++) b.push_back(228 * 32768 + 1488);
+    //for (int i = 0; i < len_b; i++) bb.push_back(1488), bb.push_back(228);
 
 
-    cerr << "Multilpy is coming...\n";
+    //BigInteger A(a, BASE);
+    //BigInteger B(b, BASE);
 
-    //auto resA = BigIntegerMultiplySpeedTestBase(A, B);
-    auto resAA = BigIntegerMultiplySpeedTestKaratsuba(AA, BB);
-    //auto resA = resAA;
-    auto resAAA = BigIntegerMultiplySpeedTestToomCook(AAA, BBB);
-    auto resAAAA = BigIntegerMultiplySpeedStrassen(AAAA, BBBB);
-    auto resAAAAA = BigIntegerMultiplySpeedSchongahe(AAAAA, BBBBB);
+    //BigIntegerKaratsuba AA(a, BASE_KARATSUBA);
+    //BigIntegerKaratsuba BB(b, BASE_KARATSUBA);
+
+    //BigIntegerToomCook AAA(a, BASE_TOOM_COOK);
+    //BigIntegerToomCook BBB(b, BASE_TOOM_COOK);
+
+    //BigIntegerStrassen AAAA(aa, BASE_STRASSEN);
+    //BigIntegerStrassen BBBB(bb, BASE_STRASSEN);
+
+    //BigIntegerStrassen AAAAA(aa, BASE_SCHONGAHE);
+    //BigIntegerStrassen BBBBB(bb, BASE_SCHONGAHE);
+
+
+    //cerr << "Multilpy is coming...\n";
+
+    ////auto resA = BigIntegerMultiplySpeedTestBase(A, B);
+    //auto resAA = BigIntegerMultiplySpeedTestKaratsuba(AA, BB);
+    ////auto resA = resAA;
+    //auto resAAA = BigIntegerMultiplySpeedTestToomCook(AAA, BBB);
+    //auto resAAAA = BigIntegerMultiplySpeedStrassen(AAAA, BBBB);
+    //auto resAAAAA = BigIntegerMultiplySpeedSchongahe(AAAAA, BBBBB);
 
 
 
