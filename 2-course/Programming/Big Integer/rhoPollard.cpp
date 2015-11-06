@@ -10,12 +10,13 @@ rhoPollard::rhoPollard(){
 
 
 //cormen2 - RUS - page 1007
+//http://e-maxx.ru/algo/factorization
 Integer rhoPollard::factor(Integer n){
     
     Integer x = rand(n);
     Integer y = x, one("1", BASE_INTEGER);
 
-    for (int i = 1, k = 2; i < 100; i++){
+    for (int i = 1, k = 2; i < 1000; i++){
         x = x * x;
         x.Subtract(one);
         x = x % n;

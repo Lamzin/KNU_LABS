@@ -98,7 +98,9 @@ void print_factorization(Integer x, vector<Integer> fact){
 void dixon_method(){
     string a, b;
     a = "89755";//619 29 5
-
+    a = "44564564564564564";
+    //a = "44564564";
+    //a = "445645654";
     Integer A(a, BASE_INTEGER);
 
     Dixon Dix;
@@ -110,6 +112,7 @@ void polard_method(){
     string a, b;
     a = "89755";//619 29 5
     a = "279841";//23*23*23*23
+    a = "44564564564564564";
 
     Integer A(a, BASE_INTEGER);
 

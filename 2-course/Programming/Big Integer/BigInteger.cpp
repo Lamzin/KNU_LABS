@@ -257,10 +257,11 @@ void BigInteger::SubtractWithoutChecking(const BigInteger &right_number, bool co
 
 void BigInteger::Multiply(const BigInteger &right_number){
     auto right_arr = right_number.ToArray();
-    vll result(number.size() + right_arr.size(), 0);
+    vll result(number.size() + right_arr.size() + 10, 0);
 
     for (ll i = 0; i < number.size(); i++){
         for (ll j = 0, current = 0; j < right_arr.size() || current; j++){
+            if (i + j >= result.size()) break;
             current += result[i + j] + number[i] * (j < right_arr.size() ? right_arr[j] : 0);
             result[i + j] = current % base;
             current /= base;

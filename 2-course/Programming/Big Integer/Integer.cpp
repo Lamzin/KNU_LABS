@@ -88,9 +88,15 @@ std::pair<Integer, int> Integer::multiplicative_inverse() const{
 
     do{
         std::swap(x, x_new);
-        xbuf1 = x * two;
+        //xbuf1 = x * two;
+        xbuf1 = x;
+        xbuf1.Multiply(two);
         xbuf1.ShiftRight(2 * precision);
-        xbuf2 = x * x * b;
+        //xbuf2 = x * x * b;
+        xbuf2 = x;
+        xbuf2.Multiply(x);
+        xbuf2.Multiply(b);
+
         xbuf2.ShiftRight(4 * precision);
         x_new = xbuf1;
         x_new.Subtract(xbuf2);
