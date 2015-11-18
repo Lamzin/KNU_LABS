@@ -2,3 +2,8 @@ LINK: https://sites.google.com/site/byvkyiv/arhiteom_stac/arhiteom_lab_06
 
 bit processor = 2
 bit words = 28
+
+bswp R abcd - swap to_decimal(ab) and to_decimal(cd) bits in R
+bswp R 0003:
+   R     = 0000 0000 0000 0000 0000 0000 1000
+-> R_new = 0000 0000 0000 0000 0000 0000 0001
