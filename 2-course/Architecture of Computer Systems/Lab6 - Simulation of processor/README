@@ -7,3 +7,6 @@ bswp R abcd - swap to_decimal(ab) and to_decimal(cd) bits in R
 bswp R 0003:
    R     = 0000 0000 0000 0000 0000 0000 1000
 -> R_new = 0000 0000 0000 0000 0000 0000 0001
+
+
+go run main.go
