@@ -22,6 +22,7 @@ func NewProcessor() Processor {
 
 
 func BitRepresent(R int64) string {
+	fmt.Println("R =", R)
 	var last, pow int64 = 0, 134217728 // 0, 2 ** 27
 	var s string
 
@@ -29,8 +30,10 @@ func BitRepresent(R int64) string {
 		last = 1
 	}
 
-	if last != R & (1 << 26) {
-		R = R ^ (1 << 26)
+
+	x, y := (last > 0), (R & (1 << 27) > 0)
+	if (x || y) && !(x && y) {
+		R = R ^ (1 << 27)
 	}
 
 	for i := 27; i>=0; i-- {
