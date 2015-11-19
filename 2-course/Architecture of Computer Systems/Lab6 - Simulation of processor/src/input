@@ -1,3 +1,5 @@
+copy R1 -2
+add R1 3
 add R1 3
 add R2 -9
 div R2 2
