@@ -1,11 +1,4 @@
 copy R1 -2
-add R1 3
-add R1 3
-add R2 -9
-div R2 2
-add R2 9
-copy R1 R2
-sub R1 1
-add RR 04
-add R1 RR
-bswp R1 0002
+add R1 2
+add R1 127
+bswp R1 2002

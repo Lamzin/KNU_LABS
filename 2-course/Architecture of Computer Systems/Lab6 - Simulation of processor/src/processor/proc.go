@@ -22,7 +22,7 @@ func NewProcessor() Processor {
 
 
 func BitRepresent(R int64) string {
-	fmt.Println("R =", R)
+	// fmt.Println("R =", R)
 	var last, pow int64 = 0, 134217728 // 0, 2 ** 27
 	var s string
 
