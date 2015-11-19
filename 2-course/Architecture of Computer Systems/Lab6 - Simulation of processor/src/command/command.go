@@ -29,7 +29,8 @@ func GetCommands() []Command{
 		panic("#Error: problems with input file.")
 	}
 
-	for _, line := range strings.Split(string(input), "\r\n"){
+	for _, line := range strings.Split(string(input), "\n"){
+		line = strings.Replace(line, "\r", "", -1)
 		if arr := strings.Split(line, " "); len(arr) == 3 {
 			commands = append(commands, NewCommand(arr[0], arr[1], arr[2]))
 		} else {
