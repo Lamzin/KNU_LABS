@@ -2,6 +2,7 @@ package factor
 
 import (
 	"../mymath"
+	"fmt"
 )
 
 
@@ -25,35 +26,46 @@ func Shanks(n int64) (int64, bool) {
 
 	var d int64
 	for i := 2; true; i++ {
-		P = append(P, r[i - 1] * Q[i - 1] - P[i - 1])
-		Q = append(Q, Q[i - 2] + (P[i - 1] - P[i]) * r[i - 1])
-		r = append(r, (P[i] + mymath.Sqrt(n)) / Q[i])
+		P = append(P, r[1] * Q[1] - P[1])
+		Q = append(Q, Q[0] + (P[1] - P[2]) * r[1])
+		r = append(r, (P[2] + mymath.Sqrt(n)) / Q[2])
 		
-		if sqrt, ok := mymath.IsSqr(Q[i]); ok {
+		if sqrt, ok := mymath.IsSqr(Q[2]); ok {
 			d = sqrt
 			break
 		}
+		
+		P = P[1:3]
+		Q = Q[1:3]
+		r = r[1:3]
 	}
 
-
 	var Pnew, Qnew, rnew []int64
+	
 	Pnew = append(Pnew, -P[len(P) - 1])
 	Qnew = append(Qnew, d)
 	rnew = append(rnew, (Pnew[0] + mymath.Sqrt(n)) / Qnew[0])
 	Pnew = append(Pnew, rnew[0] * Qnew[0] - Pnew[0])
 	Qnew = append(Qnew, (n - Pnew[1] * Pnew[1]) / Qnew[0])
 
-	rnew = append(rnew, rnew[0])
-
+	//rnew = append(rnew, 3)
+	rnew = append(rnew, (Pnew[1] + mymath.Sqrt(n)) / Qnew[1]) // What is real value to INIT ?!
 	
 	for i := 2; true; i++ {
-		Pnew = append(Pnew, rnew[i - 1] * Qnew[i - 1] - Pnew[i - 1])
-		Qnew = append(Qnew, Qnew[i - 2] + (Pnew[i - 1] - Pnew[i]) * rnew[i - 1])
-		rnew = append(rnew, (Pnew[i] + mymath.Sqrt(n)) / Qnew[i])
-		
-		if Pnew[i] == Pnew[i - 1] {
-			return Qnew[i - 1], true
+		fmt.Println(Pnew, Qnew, rnew)
+
+		Pnew = append(Pnew, rnew[1] * Qnew[1] - Pnew[1])
+		Qnew = append(Qnew, Qnew[0] + (Pnew[1] - Pnew[2]) * rnew[1])
+		rnew = append(rnew, (Pnew[2] + mymath.Sqrt(n)) / Qnew[2])
+			
+		if Pnew[2] == Pnew[1] {
+			fmt.Println("Find:", Qnew[1])
+			return Qnew[1], true
 		}
+		
+		Pnew = Pnew[1:3]
+		Qnew = Qnew[1:3]
+		rnew = rnew[1:3]
 	}
 	
 	return N, false
