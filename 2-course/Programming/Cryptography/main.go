@@ -10,12 +10,13 @@ import (
 func test_factorization() {
 	//445623461  = [19069 23369]
 	//3230893777 = [33461 96557] -param={20, 20}
-	var n int64 = 15341//24961//1993901//15341//19939
+	var n int64 = 1534145564//24961//1993901//15341//19939
 	var algorithms []factor.Algo
 	
 	algorithms = append(algorithms, factor.Ferma)
 	algorithms = append(algorithms, factor.Pollard)
 	algorithms = append(algorithms, factor.Quadratic)	
+	algorithms = append(algorithms, factor.Shanks)	
 
 
 	fmt.Println("n = ", n)
