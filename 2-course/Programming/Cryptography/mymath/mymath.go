@@ -12,6 +12,11 @@ func Gcd(a, b int64) int64 {
 }
 
 
+func Sqrt(n int64) int64 {
+	return int64(math.Sqrt(float64(n)))
+}
+
+
 func IsSqr(n int64) (int64, bool) {
 	sqrt := int64(math.Sqrt(float64(n)))
 	
