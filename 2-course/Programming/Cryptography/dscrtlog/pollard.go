@@ -4,6 +4,7 @@ package dscrtlog
 import (
 	"math/rand"
 	"../mymath"
+	"time"
 	//"fmt"
 )
 
@@ -27,12 +28,16 @@ func reverse(number, module int64) int64 {
 
 
 func Pollard(y, g, p int64) (x int64, ok bool) {
+	seed := time.Now().UnixNano() // A new random seed (independent from state)
+    rand.Seed(seed)
+	
+	
 	var xarr, yarr, garr []int64
 	xarr = append(xarr, y*y)
 	yarr = append(yarr, 2)
 	garr = append(garr, 0)
 	
-	for i := int64(0); i < p * 20; i++ {
+	for i := int64(0); i < p * 200; i++ {
 		xtmp, ytmp, gtmp := xarr[i], yarr[i], garr[i] 
 		
 		switch rand.Intn(3) {
@@ -64,8 +69,8 @@ func Pollard(y, g, p int64) (x int64, ok bool) {
 			gcd 	:= mymath.Gcd(ydelta, p - 1)			
 			
 			if ydelta == 0 {
-				x, ok  = p, false
-				return
+//				x, ok  = p, false
+//				return
 			} else if gdelta % gcd == 0 {
 				ydelta /= gcd
 				gdelta /= gcd
