@@ -20,7 +20,7 @@ func IsSqr(n int64) (int64, bool) {
 			return i, true
 		}
 	}
-	return 0, false
+	return sqrt, false
 }
 
 

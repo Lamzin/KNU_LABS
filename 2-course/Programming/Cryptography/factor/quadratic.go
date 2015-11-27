@@ -63,13 +63,13 @@ func NewFctr(a, b int64, vector, full []int) (f fctr) {
 
 
 func Quadratic(n int64) (int64, bool) {
-	basesz := 10
+	basesz, count := 20, 20
 	baseF := []int64{int64(-1)}
 	baseF = append(baseF, makeBase(n, basesz - 1)...)
 	
 	var setT []fctr
 	sqrt := int64(math.Sqrt(float64(n)))
-	for xx := int64(0); len(setT) != basesz; xx++ {
+	for xx := int64(0); len(setT) != count; xx++ {
 		x := xx / 2
 		if xx % 2 == 1 {
 			x = -x - 1
@@ -125,7 +125,7 @@ func Quadratic(n int64) (int64, bool) {
 			}
 		}
 				
-		for i := deep + 1; i < basesz; i++ {
+		for i := deep + 1; i < count; i++ {
 			div, okk := dfs(i)
 			if okk {
 				divider = div
