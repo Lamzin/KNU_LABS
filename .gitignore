@@ -41,3 +41,7 @@
 *.suo
 *.opensdf
 *.sdf
+
+
+# IntelliJ IDEA
+.idea
