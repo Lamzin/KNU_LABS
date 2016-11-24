@@ -9,6 +9,7 @@ import (
 func main() {
 	ctx := NewGaussContext(GetInput())
 	ctx.Solve()
+	ctx.PrintState()
 }
 
 type GaussContext struct {
@@ -36,27 +37,35 @@ func NewGaussContext(mitems []float64, bitems []float64) GaussContext {
 func (ctx *GaussContext) Solve() {
 	for i := 0; i < ctx.N; i++ {
 		maxIndex := i
-		maxValue := math.Abs(ctx.M.Get(i, maxIndex))
-		for j := i; j < ctx.N; j++ {
-			if maxValue < math.Abs(ctx.M.Get(i, j)) {
+		maxValue := ctx.M.Get(i, maxIndex)
+		for j := i + 1; j < ctx.N; j++ {
+			if math.Abs(maxValue) < math.Abs(ctx.M.Get(i, j)) {
 				maxIndex = j
-				maxValue = math.Abs(ctx.M.Get(i, j))
+				maxValue = ctx.M.Get(i, j)
 			}
 		}
 		ctx.swapColumns(i, maxIndex)
 
-		// TODO
-		// miss understanding
+		for j := 0; j < ctx.N; j++ {
+			ctx.M.Set(i, j, ctx.M.Get(i, j)/maxValue)
+		}
+		ctx.B.Set(i, 0, ctx.B.Get(i, 0)/maxValue)
+
+		for ii := 0; ii < ctx.N; ii++ {
+			if i == ii {
+				continue
+			}
+			k := ctx.M.Get(ii, i)
+			for jj := 0; jj < ctx.N; jj++ {
+				ctx.M.Set(ii, jj, ctx.M.Get(ii, jj)-k*ctx.M.Get(i, jj))
+			}
+			ctx.B.Set(ii, 0, ctx.B.Get(ii, 0)-k*ctx.B.Get(i, 0))
+		}
 	}
 }
 
 func (ctx *GaussContext) swapColumns(i, j int) {
 	ctx.Order[i], ctx.Order[j] = ctx.Order[j], ctx.Order[i]
-
-	tmp := ctx.B.Get(i, 0)
-	ctx.B.Set(i, 0, ctx.B.Get(j, 0))
-	ctx.B.Set(j, 0, tmp)
-
 	for index := 0; index < ctx.N; index++ {
 		tmp := ctx.M.Get(index, i)
 		ctx.M.Set(index, i, ctx.M.Get(index, j))
@@ -67,5 +76,6 @@ func (ctx *GaussContext) swapColumns(i, j int) {
 func (ctx *GaussContext) PrintState() {
 	fmt.Printf("M:\n%s\n", ctx.M.String())
 	fmt.Printf("B:\n%s\n", ctx.B.String())
+	fmt.Printf("Order:\n%x\n", ctx.Order)
 	fmt.Printf("\n")
 }

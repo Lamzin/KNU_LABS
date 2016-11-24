@@ -59,7 +59,7 @@ func (ctx *ZeidelContext) Iteration() bool {
 	}
 	delta := getMaxDelta(x, ctx.X, ctx.N)
 	ctx.X = x
-	return delta > 0.000001
+	return delta > 0.000000001
 }
 
 func (ctx *ZeidelContext) PrintState() {

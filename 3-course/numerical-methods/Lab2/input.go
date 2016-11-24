@@ -15,3 +15,27 @@ func GetInput() (mitems []float64, bitems []float64) {
 			-1.6,
 		}
 }
+
+func GetInput2() (mitems []float64, bitems []float64) {
+	return []float64{
+			1, 2,
+			1, 1,
+		},
+		[]float64{
+			5,
+			7,
+		}
+}
+
+func GetInput3() (mitems []float64, bitems []float64) {
+	return []float64{
+			10, 1, 1,
+			2, 10, 1,
+			2, 2, 10,
+		},
+		[]float64{
+			12,
+			13,
+			14,
+		}
+}
