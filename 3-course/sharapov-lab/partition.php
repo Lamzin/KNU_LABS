@@ -132,21 +132,21 @@ class Foo {
     }
     function getCombinationByIndex($index, $k, $n) {
         $combination = array();
-        $skipped = gmp_init(0);
+        $skipped = "0";
         for ($i = 1; count($combination) < $k; $i++) {
             $c = $this->getCombinations($k - 1 - count($combination), $n - $i);
-            if (gmp_cmp(gmp_add($skipped, $c), gmp_init($index)) >= 0) {
+            if (bccomp(bcadd($skipped, $c), $index) >= 0) {
                 array_push($combination, $i);
             } else {
-                $skipped = gmp_add($skipped, $c);
+                $skipped = bcadd($skipped, $c);
             }
         }
         return $combination;
     }
     function getCombinations($k, $n) {
         $c = $this->getFactorial($n);
-        $c = gmp_div($c, $this->getFactorial($k));
-        $c = gmp_div($c, $this->getFactorial($n - $k));
+        $c = bcdiv($c, $this->getFactorial($k));
+        $c = bcdiv($c, $this->getFactorial($n - $k));
         return $c;
     }
     function getFactorial($n) {
@@ -158,5 +158,5 @@ class Foo {
     }
 }
 $foo = new Foo;
-echo $foo->main("203", "100");
+echo $foo->main("202", "6");
 ?>
