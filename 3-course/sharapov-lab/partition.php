@@ -4,14 +4,14 @@
 <?php
 class Foo {
     function main($index, $n) {
-//        $combinations = $this->getAllSumCombinations($n);
+        $combinations = $this->getAllSumCombinations($n);
         $enough = false;
         $skipped = "0";
-        $combination = array();
-        foreach ($this->getAllSumCombinations($n) as $value) {
-            $c = $this->getPartitionCountInBlock($value);
+        $combination = $combinations[0];
+        for ($i = 0; $i < count($combinations); $i++) {
+            $c = $this->getPartitionCountInBlock($combinations[$i]);
             if (bccomp(bcadd($skipped, $c), $index) >= 0) {
-                $combination = $value;
+                $combination = $combinations[$i];
                 $enough = true;
                 break;
             }
@@ -99,13 +99,14 @@ class Foo {
         return $count;
     }
     function getAllSumCombinations($n) {
+        $combinations = array();
         for ($combinationSize = $n; $combinationSize > 0; $combinationSize--) {
             $currentCombination = array();
             for ($i = 0; $i + 1 < $combinationSize; $i++) {
                 array_push($currentCombination, 1);
             }
             array_push($currentCombination, $n - $combinationSize + 1);
-            yield $currentCombination;
+            array_push($combinations, $currentCombination);
             for ($haveNext = true; $haveNext;) {
                 $haveNext = false;
                 $suffixSum = 0;
@@ -120,13 +121,14 @@ class Foo {
                             $suffixSum -= $currentCombination[$i - 1];
                         }
                         $currentCombination[$combinationSize - 1] += $suffixSum;
-                        yield $currentCombination;
+                        array_push($combinations, $currentCombination);
                         $haveNext = true;
                         break;
                     }
                 }
             }
         }
+        return $combinations;
     }
     function getCombinationByIndex($index, $k, $n) {
         $combination = array();
@@ -156,5 +158,5 @@ class Foo {
     }
 }
 $foo = new Foo;
-echo $foo->main("203", "6");
+echo $foo->main("203", "100");
 ?>
