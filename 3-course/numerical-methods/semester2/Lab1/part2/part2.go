@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./gauss"
+	"../gauss"
 	"fmt"
 	"math"
 )
