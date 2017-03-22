@@ -130,9 +130,9 @@ func solve(left, right, pointCnt float64, f F, phis []F) []float64 {
 	}
 
 	ctx := gauss.NewGaussContext(m, b)
-	//ctx.PrintState()
+	ctx.PrintState()
 	ctx.Solve()
-	//ctx.PrintState()
+	ctx.PrintState()
 	return ctx.GetAnswer()
 }
 
@@ -155,6 +155,7 @@ type Task struct {
 
 func (t *Task) Solve() {
 	t.coeffs = solve(t.A, t.B, t.M, t.F, t.Phis)
+	fmt.Println(t.coeffs)
 
 	t.q = func(x float64) float64 {
 		sum := 0.0

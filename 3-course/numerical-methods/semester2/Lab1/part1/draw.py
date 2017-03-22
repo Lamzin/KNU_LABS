@@ -18,7 +18,7 @@ t = np.arange(leftBound, rightBound, 0.01)
 
 plt.figure(1)
 plt.plot(
-    t, graphic(t, origin_expression), 'g', 
+    t, graphic(t, origin_expression), 'b--',
     t, graphic(t, approximation1), 'y', 
     t, graphic(t, approximation2), 'r' 
 )
