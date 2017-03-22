@@ -17,7 +17,7 @@ func main() {
 		K: 1.0,
 		C: 1.0,
 		W: 0.5,
-		M: 20.0,
+		M: 5.0,
 	}
 	t.F = func(x float64) float64 {
 		return t.K*math.Log(x) + t.C*math.Cos(t.W*x)
