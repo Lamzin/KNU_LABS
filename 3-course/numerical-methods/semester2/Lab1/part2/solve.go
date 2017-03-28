@@ -16,7 +16,7 @@ func main() {
 		B: 3.0,
 		K: 1.0,
 		C: 1.0,
-		W: 0.5,
+		W: 9,
 		M: 20.0,
 	}
 	t.F = func(x float64) float64 {

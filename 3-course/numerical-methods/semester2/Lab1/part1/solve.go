@@ -11,12 +11,12 @@ import (
 
 func main() {
 	t := Task{
-		N: 4,
+		N: 3,
 		A: 1.0,
 		B: 3.0,
 		K: 1.0,
 		C: 1.0,
-		W: 0.5,
+		W: 9,
 	}
 	t.F = func(x float64) float64 {
 		return t.K*math.Log(x) + t.C*math.Cos(t.W*x)
