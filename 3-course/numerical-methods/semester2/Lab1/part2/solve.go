@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"../gauss"
+	"github.com/Lamzin/go.matrix"
 	"io/ioutil"
 	"strings"
 )
@@ -16,8 +17,8 @@ func main() {
 		B: 3.0,
 		K: 1.0,
 		C: 1.0,
-		W: 9,
-		M: 20.0,
+		W: 8,
+		M: 10.0,
 	}
 	t.F = func(x float64) float64 {
 		return t.K*math.Log(x) + t.C*math.Cos(t.W*x)
@@ -26,12 +27,13 @@ func main() {
 	fmt.Println(t.GetOriginFormula())
 
 	report := fmt.Sprintf(
-		"%6.6f\n%6.6f\n%s\n%s\n%s\n",
+		"%6.6f\n%6.6f\n%s\n%s\n%s\n%s\n",
 		t.A,
 		t.B,
 		t.GetOriginFormula(),
 		solveLegendre(t),
 		solveExponential(t),
+		solveSpline(t),
 	)
 
 	ioutil.WriteFile("expressions.txt", []byte(report), 0644)
@@ -82,6 +84,109 @@ func solveLegendre(t Task) string {
 	fmt.Printf("Deviation: %6.6f\n", t.GetDeviation())
 
 	return t.GetLegendreFormula()
+}
+
+func solveSpline(t Task) string {
+	n := int(t.M)
+	h := (t.B - t.A) / t.M
+
+	xitems := make([]float64, n+1)
+	for i := 0; i < n+1; i++ {
+		xitems[i] = t.A + h*float64(i)
+	}
+
+	aitems := make([]float64, (n-1)*(n-1))
+	for i := 0; i < n-1; i++ {
+		for j := 0; j < n-1; j++ {
+			if i == j {
+				aitems[i*(n-1)+j] = 2.0 * h / 3.0
+			} else if i == j+1 || i+1 == j {
+				aitems[i*(n-1)+j] = h / 6.0
+			} else {
+				aitems[i*(n-1)+j] = 0
+			}
+		}
+	}
+	A := matrix.MakeDenseMatrix(aitems, n-1, n-1)
+
+	hitems := make([]float64, (n-1)*(n+1))
+	for i := 0; i < n-1; i++ {
+		for j := 0; j < n+1; j++ {
+			if i == j {
+				hitems[i*(n+1)+j] = 1.0 / h
+			} else if i+1 == j {
+				hitems[i*(n+1)+j] = -2.0 / h
+			} else if i+2 == j {
+				hitems[i*(n+1)+j] = 1.0 / h
+			} else {
+				hitems[i*(n+1)+j] = 0
+			}
+		}
+	}
+	H := matrix.MakeDenseMatrix(hitems, n-1, n+1)
+
+	pitems := make([]float64, (n+1)*(n+1))
+	for i := 0; i < n+1; i++ {
+		for j := 0; j < n+1; j++ {
+			if i == j {
+				pitems[i*(n+1)+j] = 1 / 1000000.0
+			} else {
+				pitems[i*(n+1)+j] = 0
+			}
+		}
+	}
+	P := matrix.MakeDenseMatrix(pitems, n+1, n+1)
+
+	fitems := make([]float64, (n+1)*(1))
+	for i := 0; i < n+1; i++ {
+		fitems[i] = t.F(xitems[i])
+	}
+	F := matrix.MakeDenseMatrix(fitems, n+1, 1)
+
+	LEFT := matrix.Sum(matrix.Product(H, P, matrix.Transpose(H)), A)
+	RIGHT := matrix.Product(H, F)
+
+	order := make([]int, n-1)
+	for i := 0; i < n-1; i++ {
+		order[i] = i
+	}
+	gctx := gauss.GaussContext{
+		N:     n - 1,
+		M:     LEFT,
+		B:     RIGHT,
+		Order: order,
+	}
+	gctx.Solve()
+	mitems := gctx.GetAnswer()
+	mitems = append([]float64{0.0}, mitems...)
+	mitems = append(mitems, 0.0)
+	M := matrix.MakeDenseMatrix(mitems, n-1, 1)
+
+	MU := matrix.Difference(F, matrix.Product(P, matrix.Transpose(H), M))
+
+	muitems := make([]float64, n+1)
+	for i := 0; i < n+1; i++ {
+		muitems[i] = MU.Get(i, 0)
+	}
+
+	response := fmt.Sprintf("%d\n", n)
+	for i := 1; i < n+1; i++ {
+		response += fmt.Sprintf("%.3f\n%.3f\n", xitems[i-1], xitems[i])
+		response += fmt.Sprintf(
+			"(%.3f)*(((%.3f) - x) / (%.3f))^3 + (%.3f)*((x - (%.3f)) / (%.3f))^3 + (%.3f)*((%.3f) - x) + (%.3f)*(x - (%.3f))\n",
+			mitems[i-1],
+			xitems[i],
+			6*h,
+			mitems[i],
+			xitems[i-1],
+			6*h,
+			(muitems[i-1]-mitems[i-1]*h*h/6.0)/h,
+			xitems[i],
+			(muitems[i]-mitems[i]*h*h/6.0)/h,
+			xitems[i-1],
+		)
+	}
+	return response
 }
 
 type F func(float64) float64
