@@ -18,7 +18,7 @@ func main() {
 		K: 1.0,
 		C: 1.0,
 		W: 9,
-		M: 25.0,
+		M: 20.0,
 	}
 	t.F = func(x float64) float64 {
 		return t.K*math.Log(x) + t.C*math.Cos(t.W*x)
@@ -129,7 +129,7 @@ func solveSpline(t Task) string {
 	for i := 0; i < n+1; i++ {
 		for j := 0; j < n+1; j++ {
 			if i == j {
-				pitems[i*(n+1)+j] = 1 / 1000000.0
+				pitems[i*(n+1)+j] = 1 / 1000.0
 			} else {
 				pitems[i*(n+1)+j] = 0
 			}
