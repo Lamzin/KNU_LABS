@@ -17,19 +17,19 @@ for i in range(0, n):
     l = float(file.readline())
     r = float(file.readline())
     s = file.readline()
-    ts.append(np.arange(l, r, 0.01))
+    ts.append(np.arange(l, r, 0.003))
     approximations.append(s)
 
 
 def graphic(x, f):
     return eval(f.replace('^', '**').replace('\n', ''))
 
-t = np.arange(leftBound, rightBound, 0.01)
+t = np.arange(leftBound, rightBound, 0.003)
 
 params = [
     t, graphic(t, origin_expression), 'b--',
-    t, graphic(t, approximation1), 'y',
-    t, graphic(t, approximation2), 'r'
+    # t, graphic(t, approximation1), 'y',
+    # t, graphic(t, approximation2), 'r'
 ]
 
 for i in range(0, n):

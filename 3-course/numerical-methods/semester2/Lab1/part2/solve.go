@@ -17,8 +17,8 @@ func main() {
 		B: 3.0,
 		K: 1.0,
 		C: 1.0,
-		W: 8,
-		M: 10.0,
+		W: 9,
+		M: 25.0,
 	}
 	t.F = func(x float64) float64 {
 		return t.K*math.Log(x) + t.C*math.Cos(t.W*x)
@@ -107,7 +107,9 @@ func solveSpline(t Task) string {
 			}
 		}
 	}
+
 	A := matrix.MakeDenseMatrix(aitems, n-1, n-1)
+	fmt.Println("A:\n", A)
 
 	hitems := make([]float64, (n-1)*(n+1))
 	for i := 0; i < n-1; i++ {
@@ -124,6 +126,7 @@ func solveSpline(t Task) string {
 		}
 	}
 	H := matrix.MakeDenseMatrix(hitems, n-1, n+1)
+	fmt.Println("H:\n", H)
 
 	pitems := make([]float64, (n+1)*(n+1))
 	for i := 0; i < n+1; i++ {
@@ -136,15 +139,19 @@ func solveSpline(t Task) string {
 		}
 	}
 	P := matrix.MakeDenseMatrix(pitems, n+1, n+1)
+	fmt.Println("P:\n", P)
 
 	fitems := make([]float64, (n+1)*(1))
 	for i := 0; i < n+1; i++ {
 		fitems[i] = t.F(xitems[i])
 	}
 	F := matrix.MakeDenseMatrix(fitems, n+1, 1)
+	fmt.Println("F:\n", F)
 
 	LEFT := matrix.Sum(matrix.Product(H, P, matrix.Transpose(H)), A)
 	RIGHT := matrix.Product(H, F)
+	fmt.Println("LEFT:\n", LEFT)
+	fmt.Println("RIGHT:\n", RIGHT)
 
 	order := make([]int, n-1)
 	for i := 0; i < n-1; i++ {
@@ -158,28 +165,30 @@ func solveSpline(t Task) string {
 	}
 	gctx.Solve()
 	mitems := gctx.GetAnswer()
-	mitems = append([]float64{0.0}, mitems...)
-	mitems = append(mitems, 0.0)
+
 	M := matrix.MakeDenseMatrix(mitems, n-1, 1)
+	fmt.Println("M:\n", M)
 
 	MU := matrix.Difference(F, matrix.Product(P, matrix.Transpose(H), M))
-
+	fmt.Println("MU:\n", MU)
 	muitems := make([]float64, n+1)
 	for i := 0; i < n+1; i++ {
 		muitems[i] = MU.Get(i, 0)
 	}
 
+	// add 0th and (n)th value to mitems
+	mitems = append([]float64{0.0}, mitems...)
+	mitems = append(mitems, 0.0)
+
 	response := fmt.Sprintf("%d\n", n)
 	for i := 1; i < n+1; i++ {
-		response += fmt.Sprintf("%.3f\n%.3f\n", xitems[i-1], xitems[i])
+		response += fmt.Sprintf("%.8f\n%.8f\n", xitems[i-1], xitems[i])
 		response += fmt.Sprintf(
-			"(%.3f)*(((%.3f) - x) / (%.3f))^3 + (%.3f)*((x - (%.3f)) / (%.3f))^3 + (%.3f)*((%.3f) - x) + (%.3f)*(x - (%.3f))\n",
-			mitems[i-1],
+			"(%.8f)*((%.8f) - x)^3 + (%.8f)*(x - (%.8f))^3 + (%.8f)*((%.8f) - x) + (%.8f)*(x - (%.8f))\n",
+			mitems[i-1]/6/h,
 			xitems[i],
-			6*h,
-			mitems[i],
+			mitems[i]/6/h,
 			xitems[i-1],
-			6*h,
 			(muitems[i-1]-mitems[i-1]*h*h/6.0)/h,
 			xitems[i],
 			(muitems[i]-mitems[i]*h*h/6.0)/h,
