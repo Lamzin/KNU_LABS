@@ -107,9 +107,7 @@ func solveSpline(t Task) string {
 			}
 		}
 	}
-
 	A := matrix.MakeDenseMatrix(aitems, n-1, n-1)
-	fmt.Println("A:\n", A)
 
 	hitems := make([]float64, (n-1)*(n+1))
 	for i := 0; i < n-1; i++ {
@@ -126,7 +124,6 @@ func solveSpline(t Task) string {
 		}
 	}
 	H := matrix.MakeDenseMatrix(hitems, n-1, n+1)
-	fmt.Println("H:\n", H)
 
 	pitems := make([]float64, (n+1)*(n+1))
 	for i := 0; i < n+1; i++ {
@@ -139,19 +136,15 @@ func solveSpline(t Task) string {
 		}
 	}
 	P := matrix.MakeDenseMatrix(pitems, n+1, n+1)
-	fmt.Println("P:\n", P)
 
 	fitems := make([]float64, (n+1)*(1))
 	for i := 0; i < n+1; i++ {
 		fitems[i] = t.F(xitems[i])
 	}
 	F := matrix.MakeDenseMatrix(fitems, n+1, 1)
-	fmt.Println("F:\n", F)
 
 	LEFT := matrix.Sum(matrix.Product(H, P, matrix.Transpose(H)), A)
 	RIGHT := matrix.Product(H, F)
-	fmt.Println("LEFT:\n", LEFT)
-	fmt.Println("RIGHT:\n", RIGHT)
 
 	order := make([]int, n-1)
 	for i := 0; i < n-1; i++ {
@@ -165,12 +158,9 @@ func solveSpline(t Task) string {
 	}
 	gctx.Solve()
 	mitems := gctx.GetAnswer()
-
 	M := matrix.MakeDenseMatrix(mitems, n-1, 1)
-	fmt.Println("M:\n", M)
 
 	MU := matrix.Difference(F, matrix.Product(P, matrix.Transpose(H), M))
-	fmt.Println("MU:\n", MU)
 	muitems := make([]float64, n+1)
 	for i := 0; i < n+1; i++ {
 		muitems[i] = MU.Get(i, 0)
