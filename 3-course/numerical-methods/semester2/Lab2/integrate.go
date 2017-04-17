@@ -31,6 +31,14 @@ func setupFormula(n float64) F {
 	}
 }
 
+func f1(x float64) float64 {
+	return 1.5707963 - math.Sqrt(1-x*x)
+}
+
+func f2(x float64) float64 {
+	return 1 - x*math.Sqrt(1-x*x)
+}
+
 type Task struct {
 	I                  Integral
 	Precision          float64
@@ -57,7 +65,7 @@ Loop:
 			R := math.Abs(IH2-IH) / (math.Pow(2, t.AlgebraicPrecision) - 1)
 
 			newPoints = append(newPoints, l)
-			if R > t.Precision / 2 {
+			if R > t.Precision*(r-l)/(t.I.R-t.I.L)/2.0 {
 				newPoints = append(newPoints, (l+r)/2.0)
 			}
 			t.ih += IH
@@ -105,7 +113,9 @@ func (t Task) Richardson() {
 func main() {
 
 	t := Task{
-		I:                  NewIntegral(setupFormula(2), 0, 1),
+		//I:                  NewIntegral(setupFormula(2), 0, 1),
+		//I:                  NewIntegral(f1, 0, 1),
+		I:                  NewIntegral(f2, 0, 1),
 		Precision:          0.00001,
 		AlgebraicPrecision: 2,
 	}
