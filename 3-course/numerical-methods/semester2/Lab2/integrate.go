@@ -54,7 +54,7 @@ func (t Task) Solve() {
 
 Loop:
 	for ; ; t.itetations++ {
-		t.PrintState()
+		//t.PrintState()
 		t.ih, t.ih2 = 0, 0
 		newPoints := make([]float64, 0)
 
@@ -65,7 +65,7 @@ Loop:
 			R := math.Abs(IH2-IH) / (math.Pow(2, t.AlgebraicPrecision) - 1)
 
 			newPoints = append(newPoints, l)
-			if R > t.Precision*(r-l)/(t.I.R-t.I.L)/2.0 {
+			if R > t.Precision*(r-l)/(t.I.R-t.I.L) {
 				newPoints = append(newPoints, (l+r)/2.0)
 			}
 			t.ih += IH
@@ -80,6 +80,13 @@ Loop:
 	}
 	t.PrintState()
 	t.Richardson()
+
+	h := 5 * math.Pow(10, -9)
+	I := 0.0
+	for i := t.I.L; i + h <= t.I.R; i += h {
+		I += t.I.Calc(i, i + h)
+	}
+	fmt.Println("I: ", I)
 }
 
 func (t Task) PrintState() {
@@ -94,14 +101,14 @@ func (t Task) PrintState() {
 
 	format := `Iteration #%d
 points: %d, IH: %0.8f, IH2: %0.8f, eps: %0.8f
-points array: %v
-diff array: %v
-min diff: %.8f
+points array:
+diff array:
+min diff: %0.20f
 precision(by Runge): %.8f
 
 `
 	precision := (t.ih2 - t.ih) / (math.Pow(2, t.AlgebraicPrecision) - 1)
-	fmt.Printf(format, t.itetations, len(t.points), t.ih, t.ih2, t.Precision, t.points, diff, minDiff, precision)
+	fmt.Printf(format, t.itetations, len(t.points), t.ih, t.ih2, t.Precision, minDiff, precision)
 }
 
 func (t Task) Richardson() {
@@ -112,11 +119,17 @@ func (t Task) Richardson() {
 
 func main() {
 
+	eps := 0.00001
+	delta := 2 * math.Pow(eps, 2) / (16 + math.Pow(eps, 2))
+
+	fmt.Printf("eps: %0.8f\n", eps)
+	fmt.Printf("delta: %0.20f\n", delta)
+
 	t := Task{
-		//I:                  NewIntegral(setupFormula(2), 0, 1),
+		I:                  NewIntegral(setupFormula(2), 0, 1-delta),
 		//I:                  NewIntegral(f1, 0, 1),
-		I:                  NewIntegral(f2, 0, 1),
-		Precision:          0.00001,
+		//I:                  NewIntegral(f2, 0, 1),
+		Precision:          eps / 2,
 		AlgebraicPrecision: 2,
 	}
 
