@@ -110,7 +110,7 @@ func (t *Task) Solve() {
 func main() {
 	t := Task{
 		Config: Config{
-			A: -1,
+			A: 3,
 			B: 1,
 			C: 1,
 			D: 2,
@@ -118,7 +118,7 @@ func main() {
 			N: -1,
 			L: 1,
 		},
-		N: 50,
+		N: 20,
 	}
 	t.Init()
 	t.Solve()
