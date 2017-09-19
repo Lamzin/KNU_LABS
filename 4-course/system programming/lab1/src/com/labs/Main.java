@@ -21,21 +21,48 @@ public class Main {
             return;
         }
 
-        Set<String> validWords = new TreeSet<>();
+        Set<String> searchedWords = new TreeSet<>();
+        int maxLength = 0;
 
         String word;
         while (!(word = getNextWord().toLowerCase()).isEmpty()) {
-            if (word.length() == 31) continue;
-
-            if (word.matches("[aeiouаеыиоуіеэ]*")) {
-                validWords.add(word);
+            int length = lengthOfMaxSequenceOfConsonantsLetter(word);
+            if (length > maxLength) {
+                maxLength = length;
+                searchedWords.clear();
+                searchedWords.add(word);
+            } else if (length == maxLength) {
+                searchedWords.add(word);
             }
         }
 
-        for (String item : validWords) {
+        System.out.println(maxLength);
+        for (String item : searchedWords) {
             System.out.println(item);
         }
 
+    }
+
+    private static int lengthOfMaxSequenceOfConsonantsLetter(String word) {
+        int result = 0, current = 0;
+        for (char ch : word.toCharArray()) {
+            if (isVowelCharacter(ch)) {
+                if (current > result) {
+                    result = current;
+                }
+                current = 0;
+            } else {
+                current++;
+            }
+        }
+        if (current > result) {
+            result = current;
+        }
+        return result;
+    }
+
+    private static boolean isVowelCharacter(char ch) {
+        return "aeiouаеыиоуіеэ".indexOf(ch) >= 0;
     }
 
     private static boolean openFile() {
@@ -62,21 +89,23 @@ public class Main {
         String word = "";
         int ch;
         try {
-            while ((ch = bufferedReader.read()) != -1 && !Character.isAlphabetic(ch));
-            if (ch == -1) {
-                return "";
-            }
-            word += (char)ch;
-            while ((ch = bufferedReader.read()) != -1 && Character.isAlphabetic(ch)) {
-                if (word.length() < 31) {
-                    word += (char)ch;
+            boolean nextIteration = true;
+            while (nextIteration) {
+                while ((ch = bufferedReader.read()) != -1 && !Character.isAlphabetic(ch));
+                if (ch == -1) {
+                    return "";
                 }
+                word += (char) ch;
+                while ((ch = bufferedReader.read()) != -1 && Character.isAlphabetic(ch)) {
+                    if (word.length() < 31) {
+                        word += (char) ch;
+                    }
+                }
+                nextIteration = word.length() >= 31;
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            return word;
         }
-
+        return word;
     }
 }
