@@ -45,3 +45,6 @@
 
 # IntelliJ IDEA
 .idea
+
+# Python
+*.pyc
