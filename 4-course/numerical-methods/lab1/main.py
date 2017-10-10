@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-from methods import Galerkin
+from methods import Galerkin, MinSquares
 from function import F, sin, cos, X
 
 
@@ -48,5 +48,6 @@ if __name__ == "__main__":
     n, a, b, m_koef, k_koef, q_koef, p_koef, alpha_koef, u, k, p, q, f = get_task_variable()
 
     galerkin = Galerkin(n, a, b, m_koef, k_koef, q_koef, p_koef, alpha_koef, u, k, p, q, f)
+    min_squares = MinSquares(n, a, b, m_koef, k_koef, q_koef, p_koef, alpha_koef, u, k, p, q, f)
 
-    draw(a, b, [u[0], galerkin.solve()])
+    draw(a, b, [u[0], galerkin.solve(), min_squares.solve()])
