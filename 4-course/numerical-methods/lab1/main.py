@@ -4,9 +4,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-
+from scipy import integrate
 from methods import Galerkin, MinSquares
-from function import F, sin, cos, X
+from function import F, sin, cos, X, abs
 
 
 def draw(a, b, functions):
@@ -16,10 +16,10 @@ def draw(a, b, functions):
 
 
 def get_task_variable():
-    n = 5
+    n = 8
     a, b = 0, 5
 
-    m_koef = [2., 1., 1.5, 0.5, 5.]
+    m_koef = [2., 1., 1.5, 1.5, 5.]
     k_koef = [2., 1., 4.]
     q_koef = [2., 1., 4.]
     p_koef = [2., 1., 4.]
@@ -51,3 +51,6 @@ if __name__ == "__main__":
     min_squares = MinSquares(n, a, b, m_koef, k_koef, q_koef, p_koef, alpha_koef, u, k, p, q, f)
 
     draw(a, b, [u[0], galerkin.solve(), min_squares.solve()])
+
+    print((integrate.quad(abs(u[0] - galerkin.solve()), a, b))[0])
+    print((integrate.quad(abs(u[0] - min_squares.solve()), a, b))[0])

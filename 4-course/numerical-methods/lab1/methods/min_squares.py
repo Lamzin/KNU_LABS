@@ -59,9 +59,9 @@ class MinSquares(object):
         matrix = [
             [
                 (integrate.quad(s.A_phi(j)*s.A_phi(i), s.a, s.b))[0]
-                for j in range(s.n)
+                for i in range(s.n)
             ]
-            for i in range(s.n)
+            for j in range(s.n)
         ]
         b = [
             (integrate.quad(s.A_phi(i)*s.f, s.a, s.b))[0]

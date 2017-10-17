@@ -66,6 +66,10 @@ def sin(f):
     return Function(lambda x: math.sin(f(x)))
 
 
+def abs(f):
+    return Function(lambda x: math.fabs(f(x)))
+
+
 if __name__ == "__main__":
     f = Function(lambda x: x)
     g = Function(lambda x: 2*x)
