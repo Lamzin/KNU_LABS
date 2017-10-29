@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+
+span {
+    white-space: pre;
+}
+
+.comment_multiline, .comment {
+    color: blue;
+}
+
+.undefined {
+    color: red;
+}
+
+</style>
+<body>
+
+<span class='undefined'>package main
+
+import (
+	"fmt"
+)
+
+</span><span class='comment'>// This is comment
+
+</span><span class='comment_multiline'>/*
+   This
+   is
+   multiline
+   comment
+*/
+</span><span class='undefined'>
+func main() {
+	fmt.Println("Hello, playground")
+}
+</span>
+
+
+</body>
+</html>

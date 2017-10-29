@@ -51,6 +51,7 @@ if __name__ == "__main__":
     min_squares = MinSquares(n, a, b, m_koef, k_koef, q_koef, p_koef, alpha_koef, u, k, p, q, f)
 
     draw(a, b, [u[0], galerkin.solve(), min_squares.solve()])
+    # draw(a, b, [u[0], min_squares.solve()])
 
     print((integrate.quad(abs(u[0] - galerkin.solve()), a, b))[0])
     print((integrate.quad(abs(u[0] - min_squares.solve()), a, b))[0])

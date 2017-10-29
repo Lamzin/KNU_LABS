@@ -26,7 +26,31 @@ class MinSquares(object):
         s.q = q
         s.f = f
 
+        s.__init_mu__()
+        s.__init_psi__()
+        s.__init_v__()
         s.__init_phi__()
+
+    def __init_mu__(s):
+        s.mu = [
+            (-s.k[0]*s.u[1] + s.alpha_koef[0]*s.u[0])(s.a),
+            (s.k[0]*s.u[1] + s.alpha_koef[1]*s.u[0])(s.b)
+        ]
+
+    def __init_psi__(s):
+        s.psi_koef_a = (s.alpha_koef[1]*s.mu[0] - s.alpha_koef[0]*s.mu[1]) / \
+                          (s.alpha_koef[1]*(-s.k[0](s.a) + s.a*s.alpha_koef[0]) -
+                           s.alpha_koef[0]*(s.k[0](s.b) + s.b*s.alpha_koef[1]))
+        s.psi_koef_b = (s.mu[1] - s.psi_koef_a*(s.k[0](s.b) + s.b*s.alpha_koef[1])) / s.alpha_koef[1]
+        s.psi = s.psi_koef_a*X + s.psi_koef_b
+
+    def __init_v__(s):
+        s.v = [
+            s.u[0] - s.psi,
+            s.u[1] - s.psi_koef_a,
+            s.u[2]
+        ]
+        s.Av = -s.k[1]*s.v[1] - s.k[0]*s.v[2] + s.p*s.v[1] + s.q*s.v[0]
 
     def __init_phi__(s):
         s.phi_koef_a = s.k[0](s.b) * (s.b - s.a) / \
@@ -64,10 +88,11 @@ class MinSquares(object):
             for j in range(s.n)
         ]
         b = [
-            (integrate.quad(s.A_phi(i)*s.f, s.a, s.b))[0]
+            # (integrate.quad(s.A_phi(i)*s.f, s.a, s.b))[0]
+            (integrate.quad(s.A_phi(i)*s.Av, s.a, s.b))[0]
             for i in range(s.n)
         ]
         c = np.linalg.solve(np.array(matrix), np.array(b))
 
-        u_approximation = lambda x: sum([c[i] * s.phi[i][0](x) for i in range(s.n)])
+        u_approximation = lambda x: sum([c[i] * s.phi[i][0](x) for i in range(s.n)]) + s.psi(x)
         return u_approximation
