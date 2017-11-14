@@ -33,7 +33,7 @@ public class FiniteAutomaton {
         lines.poll();
         startState = lines.poll();
         String[] finalStatesInfo = lines.poll().split(" ");
-        for (int i = 1; i < finalStatesInfo.length; i++) {
+        for (int i = 0; i < finalStatesInfo.length; i++) {
             finalStates.add(finalStatesInfo[i]);
         }
         while ((line = lines.poll()) != null) {
@@ -70,6 +70,9 @@ public class FiniteAutomaton {
         if (states.contains(currentState))
             return;
         states.add(currentState);
+        if (!transitionFunction.containsKey(currentState)) {
+            return;
+        }
         for (Map.Entry<Character, Set<String>> keyValue : transitionFunction.get(currentState).entrySet()) {
             for (String state : keyValue.getValue()) {
                 reachableStatesDfs(state, states);
