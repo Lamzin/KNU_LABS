@@ -12,7 +12,7 @@ x = Symbol('x')
 
 
 def get_task_variable():
-    n = 1000
+    n = 10
     a, b = 0., 1.
     koef = [2., 4., 3., 7., 1.,]
 
@@ -67,7 +67,7 @@ def main():
     matrix[0][0] = 1
     matrix[n][n] = 1
 
-    h = (b - a) / (n - 1.)
+    h = (b - a) / (n - 0.)
     for i in range(1, n):
         print(i)
         _ai0 = a0(k, n, a, b, i)
@@ -86,9 +86,9 @@ def main():
         b_array[i] = -_phi0
 
     c_array = np.linalg.solve(np.array(matrix), np.array(b_array))
-    for i in range(n):
+    for i in range(n + 1):
         x = a + i * h
-        print('{}: {} | {} | {}'.format(x, u(x), c_array[i], u(x) - c_array[i]))
+        print('{:10.5f}: {:10.5f} | {:10.5f} | {:10.5f}'.format(x, u(x), c_array[i], u(x) - c_array[i]))
 
     draw(a, b, u, c_array)
 
