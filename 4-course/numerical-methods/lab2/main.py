@@ -12,24 +12,26 @@ x = Symbol('x')
 
 
 def get_task_variable():
-    n = 20
-    a, b = 0., 1.
+    n = 10000
+    a, b = -10., 10.
     koef = [2., 4., 3., 7., 1.,]
 
     u = koef[0] * sin(koef[1] * x) + koef[2] * cos(koef[3] * x) + koef[4]
     k = 1. + sin(x)
     q = 2. + cos(x)
-    f = -diff(k * diff(u, x), x) + q * u
+    p = 3 + cos(2 * x)
+    f = -diff(k * diff(u, x), x) + diff(u, x) * p + q * u
 
     diff_u = lambdify(x, diff(u, x), 'numpy')
     u = lambdify(x, u, 'numpy')
     k = lambdify(x, k, 'numpy')
     q = lambdify(x, q, 'numpy')
+    p = lambdify(x, p, 'numpy')
     f = lambdify(x, f, 'numpy')
 
     alpha = [1., 5.]
     mu = [-k(a) * diff_u(a) + alpha[0] * u(a), k(b) * diff_u(b) + alpha[1] * u(b)]
-    return n, a, b, u, k, q, f, mu, alpha
+    return n, a, b, u, k, q, f, mu, alpha, p
 
 
 def a0(k, n, a, b, i):
@@ -45,6 +47,13 @@ def d0(q, n, a, b, i):
     xi05 = a + delta * (i - 0.5)
     xi15 = a + delta * (i + 0.5)
     return (integrate.quad(q, xi05, xi15, limit=200))[0] / delta
+
+
+def l0(p, n, a, b, i):
+    delta = (b - a) / (n - 0.)
+    xi05 = a + delta * (i - 0.5)
+    xi15 = a + delta * (i + 0.5)
+    return (integrate.quad(p, xi05, xi15, limit=200))[0] / delta
 
 
 def phi0(f, n, a, b, i):
@@ -64,32 +73,34 @@ def draw(a, b, u, u_approximation_points):
 
 
 def main():
-    n, a, b, u, k, q, f, mu, alpha = get_task_variable()
+    n, a, b, u, k, q, f, mu, alpha, p = get_task_variable()
 
     h = (b - a) / (n - 0.)
     print('h = ', h)
-
 
     matrix = [[0 for j in range(n + 1)] for i in range(n + 1)]
 
     a01 = h / (integrate.quad(lambda x: 1. / k(x), a, a + h / 2, limit=200))[0] / 2
     d00 = 2 * (integrate.quad(q, a, a + h / 2, limit=200))[0] / h
-    matrix[0][0] = a01 / h + alpha[0] + h * d00 / 2
-    matrix[0][1] = - a01 / h
+    l00 = (integrate.quad(p, a, a + h / 2, limit=200))[0]
+    matrix[0][0] = a01 / h + alpha[0] + h * d00 / 2 - l00 / h
+    matrix[0][1] = - a01 / h + l00 / h
 
     a0N = h / (integrate.quad(lambda x: 1. / k(x), b - h / 2, b, limit=200))[0] / 2
     d0N = 2 * (integrate.quad(q, b - h / 2, b, limit=200))[0] / h
-    matrix[n][n - 1] = - a0N / h
-    matrix[n][n] = a0N / h + alpha[1] + h * d0N / 2
+    l0N = (integrate.quad(p, b - h / 2, b, limit=200))[0]
+    matrix[n][n - 1] = - a0N / h + l0N / h
+    matrix[n][n] = a0N / h + alpha[1] + h * d0N / 2 - l0N / h
 
     for i in range(1, n):
         print(i)
         _ai0 = a0(k, n, a, b, i)
         _ai1 = a0(k, n, a, b, i + 1)
         _di = d0(q, n, a, b, i)
-        matrix[i][i - 1] = _ai0 / (h * h)
+        _li = l0(p, n, a, b, i)
+        matrix[i][i - 1] = _ai0 / (h * h) + _li / h / 2
         matrix[i][i] = (-_ai0 - _ai1) / (h * h) - _di
-        matrix[i][i + 1] = _ai1 / (h * h)
+        matrix[i][i + 1] = _ai1 / (h * h) - _li / h / 2
 
     b_array = [0 for i in range(n + 1)]
 
