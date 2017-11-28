@@ -45,6 +45,18 @@ public class Main {
         return new LexemeDescriptor[]{
                 new LexemeDescriptor("/\\*(.|\n|\r)*?\\*/", "comment_multiline"),
                 new LexemeDescriptor("//.*(\n|$)", "comment"),
+                new LexemeDescriptor("\"(?:\\\\\"|[^\"])*?\"", "string"),
+                new LexemeDescriptor(
+                        "[^a-zA-Z0-9](int64|uint64|package|go|import|func|type|struct|chan|int|float|const|" +
+                                "var|continue|break|for|while|switch|case|new|make|select|" +
+                                "double|if|else|interface|string|byte|map|true|false|" +
+                                "bool|rune)[^a-zA-Z0-9]", "lexeme"),
+                new LexemeDescriptor("'[^']'", "character"),
+                new LexemeDescriptor("[^a-zA-Z0-9]0x[0-9A-Fa-f]*[^a-zA-Z0-9]", "number_oct"),
+                new LexemeDescriptor("[^a-zA-Z0-9][-+ ]?[0-9]*[.]?[0-9]+([eE][-+]?[0-9]+)?[^a-zA-Z0-9]","number_hex"),
+                new LexemeDescriptor("[^a-zA-Z0-9]0[1-7][0-7]*[^a-zA-Z0-9]", "humber_dec"),
+                new LexemeDescriptor("[\\(\\)\\+\\-\\*\\/\\.\\%\\{\\},;-<>=:&|]", "spliter"),
+                new LexemeDescriptor("[A-Za-z][0-9A-Za-z_]*", "variable"),
         };
     }
 
@@ -54,11 +66,11 @@ public class Main {
             Matcher m = Pattern.compile(descriptor.regex()).matcher(source);
             while (m.find()) {
                 if (m.start() == m.end()) continue;
-                if (!haveIntersectionWithLexemeSegments(lexemes, m.start(), m.end())) {
+                if (!haveIntersectionWithLexemeSegments(lexemes, m.start(), m.end() - 1)) {
                     if (m.end() == source.length()) {
                         lexemes.add(new Lexeme(m.start(), source.length() - 1, descriptor.type()));
                     } else {
-                        lexemes.add(new Lexeme(m.start(), m.end(), descriptor.type()));
+                        lexemes.add(new Lexeme(m.start(), m.end() - 1, descriptor.type()));
                     }
                 }
             }

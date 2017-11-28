@@ -14,6 +14,26 @@ span {
     color: blue;
 }
 
+.string, .character {
+    color: salmon;
+}
+
+.number_oct, .number_hex, .number_dec {
+    color: navy;
+}
+
+.lexeme {
+    color: MAROON;
+}
+
+.stop_symbol {
+    color: PURPLE;
+}
+
+.variable {
+    color: FUCHSIA;
+}
+
 .undefined {
     color: red;
 }
@@ -21,24 +41,125 @@ span {
 </style>
 <body>
 
-<span class='undefined'>package main
+<span class='comment'>// In the previous example we used explicit locking with
+</span><span class='comment'>// In the previous example we used explicit locking with
+</span><span class='comment'>// [mutexes](mutexes) to synchronize access to shared state
+</span><span class='comment'>// across multiple goroutines. Another option is to use the
+</span><span class='comment'>// built-in synchronization features of  goroutines and
+</span><span class='comment'>// channels to achieve the same result. This channel-based
+</span><span class='comment'>// approach aligns with Go's ideas of sharing memory by
+</span><span class='comment'>// communicating and having each piece of data owned
+</span><span class='comment'>// by exactly 1 goroutine.
+</span><span class='lexeme'>
+package </span><span class='variable'>main</span><span class='undefined'>
+</span><span class='lexeme'>
+import </span><span class='spliter'>(</span><span class='undefined'>
+    </span><span class='string'>"fmt"</span><span class='undefined'>
+    </span><span class='string'>"math/rand"</span><span class='undefined'>
+    </span><span class='string'>"sync/atomic"</span><span class='undefined'>
+    </span><span class='string'>"time"</span><span class='undefined'>
+</span><span class='spliter'>)</span><span class='undefined'>
 
-import (
-	"fmt"
-)
+</span><span class='comment'>// In this example our state will be owned by a single
+</span><span class='comment'>// goroutine. This will guarantee that the data is never
+</span><span class='comment'>// corrupted with concurrent access. In order to read or
+</span><span class='comment'>// write that state, other goroutines will send messages
+</span><span class='comment'>// to the owning goroutine and receive corresponding
+</span><span class='comment'>// replies. These `readOp` and `writeOp` `struct`s
+</span><span class='comment'>// encapsulate those requests and a way for the owning
+</span><span class='comment'>// goroutine to respond.
+</span><span class='variable'>type</span><span class='undefined'> </span><span class='variable'>readOp</span><span class='lexeme'> struct </span><span class='spliter'>{</span><span class='undefined'>
+    </span><span class='variable'>key</span><span class='undefined'> </span><span class='lexeme'> int
+</span><span class='undefined'>    </span><span class='variable'>resp</span><span class='lexeme'> chan </span><span class='variable'>int</span><span class='undefined'>
+</span><span class='spliter'>}</span><span class='lexeme'>
+type </span><span class='variable'>writeOp</span><span class='lexeme'> struct </span><span class='spliter'>{</span><span class='undefined'>
+    </span><span class='variable'>key</span><span class='undefined'> </span><span class='lexeme'> int
+</span><span class='undefined'>    </span><span class='variable'>val</span><span class='undefined'> </span><span class='lexeme'> int
+</span><span class='undefined'>    </span><span class='variable'>resp</span><span class='lexeme'> chan </span><span class='variable'>bool</span><span class='undefined'>
+</span><span class='spliter'>}</span><span class='undefined'>
+</span><span class='lexeme'>
+func </span><span class='variable'>main</span><span class='spliter'>(</span><span class='spliter'>)</span><span class='undefined'> </span><span class='spliter'>{</span><span class='undefined'>
 
-</span><span class='comment'>// This is comment
+   </span><span class='lexeme'> var </span><span class='variable'>some_character_a</span><span class='undefined'> </span><span class='spliter'>=</span><span class='undefined'> </span><span class='character'>'a'</span><span class='spliter'>;</span><span class='undefined'>
+   </span><span class='lexeme'> var </span><span class='variable'>some_character_b</span><span class='undefined'> </span><span class='spliter'>=</span><span class='undefined'> </span><span class='character'>'b'</span><span class='spliter'>;</span><span class='undefined'>
 
-</span><span class='comment_multiline'>/*
-   This
-   is
-   multiline
-   comment
-*/
+    </span><span class='comment'>// As before we'll count how many operations we perform.
+</span><span class='undefined'>   </span><span class='lexeme'> var </span><span class='variable'>readOps</span><span class='lexeme'> uint64 </span><span class='number_hex'>= 0
+</span><span class='undefined'>   </span><span class='lexeme'> var </span><span class='variable'>writeOps</span><span class='lexeme'> uint64 </span><span class='number_hex'>= 0
 </span><span class='undefined'>
-func main() {
-	fmt.Println("Hello, playground")
-}
+    </span><span class='comment'>// The `reads` and `writes` channels will be used by
+</span><span class='undefined'>    </span><span class='comment'>// other goroutines to issue read and write requests,
+</span><span class='undefined'>    </span><span class='comment'>// respectively.
+</span><span class='undefined'>    </span><span class='variable'>reads</span><span class='undefined'> </span><span class='spliter'>:</span><span class='spliter'>=</span><span class='lexeme'> make(</span><span class='variable'>chan</span><span class='undefined'> </span><span class='spliter'>*</span><span class='variable'>readOp</span><span class='spliter'>)</span><span class='undefined'>
+    </span><span class='variable'>writes</span><span class='undefined'> </span><span class='spliter'>:</span><span class='spliter'>=</span><span class='lexeme'> make(</span><span class='variable'>chan</span><span class='undefined'> </span><span class='spliter'>*</span><span class='variable'>writeOp</span><span class='spliter'>)</span><span class='undefined'>
+
+    </span><span class='comment'>// Here is the goroutine that owns the `state`, which
+</span><span class='undefined'>    </span><span class='comment'>// is a map as in the previous example but now private
+</span><span class='undefined'>    </span><span class='comment'>// to the stateful goroutine. This goroutine repeatedly
+</span><span class='undefined'>    </span><span class='comment'>// selects on the `reads` and `writes` channels,
+</span><span class='undefined'>    </span><span class='comment'>// responding to requests as they arrive. A response
+</span><span class='undefined'>    </span><span class='comment'>// is executed by first performing the requested
+</span><span class='undefined'>    </span><span class='comment'>// operation and then sending a value on the response
+</span><span class='undefined'>    </span><span class='comment'>// channel `resp` to indicate success (and the desired
+</span><span class='undefined'>    </span><span class='comment'>// value in the case of `reads`).
+</span><span class='undefined'>   </span><span class='lexeme'> go </span><span class='variable'>func</span><span class='spliter'>(</span><span class='spliter'>)</span><span class='undefined'> </span><span class='spliter'>{</span><span class='undefined'>
+       </span><span class='lexeme'> var </span><span class='variable'>state</span><span class='undefined'> </span><span class='spliter'>=</span><span class='lexeme'> make(</span><span class='variable'>map</span><span class='lexeme'>[int]</span><span class='variable'>int</span><span class='spliter'>)</span><span class='undefined'>
+       </span><span class='lexeme'> for </span><span class='spliter'>{</span><span class='undefined'>
+           </span><span class='lexeme'> select </span><span class='spliter'>{</span><span class='undefined'>
+           </span><span class='lexeme'> case </span><span class='variable'>read</span><span class='undefined'> </span><span class='spliter'>:</span><span class='spliter'>=</span><span class='undefined'> </span><span class='spliter'><</span><span class='spliter'>-</span><span class='variable'>reads</span><span class='spliter'>:</span><span class='undefined'>
+                </span><span class='variable'>read</span><span class='spliter'>.</span><span class='variable'>resp</span><span class='undefined'> </span><span class='spliter'><</span><span class='spliter'>-</span><span class='undefined'> </span><span class='variable'>state</span><span class='undefined'>[</span><span class='variable'>read</span><span class='spliter'>.</span><span class='variable'>key</span><span class='undefined'>]
+           </span><span class='lexeme'> case </span><span class='variable'>write</span><span class='undefined'> </span><span class='spliter'>:</span><span class='spliter'>=</span><span class='undefined'> </span><span class='spliter'><</span><span class='spliter'>-</span><span class='variable'>writes</span><span class='spliter'>:</span><span class='undefined'>
+                </span><span class='variable'>state</span><span class='undefined'>[</span><span class='variable'>write</span><span class='spliter'>.</span><span class='variable'>key</span><span class='undefined'>] </span><span class='spliter'>=</span><span class='undefined'> </span><span class='variable'>write</span><span class='spliter'>.</span><span class='variable'>val</span><span class='undefined'>
+                </span><span class='variable'>write</span><span class='spliter'>.</span><span class='variable'>resp</span><span class='undefined'> </span><span class='spliter'><</span><span class='spliter'>-</span><span class='lexeme'> true
+</span><span class='undefined'>            </span><span class='spliter'>}</span><span class='undefined'>
+        </span><span class='spliter'>}</span><span class='undefined'>
+    </span><span class='spliter'>}</span><span class='spliter'>(</span><span class='spliter'>)</span><span class='undefined'>
+
+    </span><span class='comment'>// This starts 100 goroutines to issue reads to the
+</span><span class='undefined'>    </span><span class='comment'>// state-owning goroutine via the `reads` channel.
+</span><span class='undefined'>    </span><span class='comment'>// Each read requires constructing a `readOp`, sending
+</span><span class='undefined'>    </span><span class='comment'>// it over the `reads` channel, and the receiving the
+</span><span class='undefined'>    </span><span class='comment'>// result over the provided `resp` channel.
+</span><span class='undefined'>   </span><span class='lexeme'> for </span><span class='variable'>r</span><span class='undefined'> </span><span class='spliter'>:</span><span class='number_hex'>= 0;</span><span class='undefined'> </span><span class='variable'>r</span><span class='undefined'> </span><span class='number_hex'>< 100;</span><span class='undefined'> </span><span class='variable'>r</span><span class='spliter'>+</span><span class='spliter'>+</span><span class='undefined'> </span><span class='spliter'>{</span><span class='undefined'>
+       </span><span class='lexeme'> go </span><span class='variable'>func</span><span class='spliter'>(</span><span class='spliter'>)</span><span class='undefined'> </span><span class='spliter'>{</span><span class='undefined'>
+           </span><span class='lexeme'> for </span><span class='spliter'>{</span><span class='undefined'>
+                </span><span class='variable'>read</span><span class='undefined'> </span><span class='spliter'>:</span><span class='spliter'>=</span><span class='undefined'> </span><span class='spliter'>&</span><span class='variable'>readOp</span><span class='spliter'>{</span><span class='undefined'>
+                    </span><span class='variable'>key</span><span class='spliter'>:</span><span class='undefined'>  </span><span class='variable'>rand</span><span class='spliter'>.</span><span class='variable'>Intn</span><span class='number_hex'>(5)</span><span class='spliter'>,</span><span class='undefined'>
+                    </span><span class='variable'>resp</span><span class='spliter'>:</span><span class='lexeme'> make(</span><span class='variable'>chan</span><span class='lexeme'> int)</span><span class='spliter'>}</span><span class='undefined'>
+                </span><span class='variable'>reads</span><span class='undefined'> </span><span class='spliter'><</span><span class='spliter'>-</span><span class='undefined'> </span><span class='variable'>read</span><span class='undefined'>
+                </span><span class='spliter'><</span><span class='spliter'>-</span><span class='variable'>read</span><span class='spliter'>.</span><span class='variable'>resp</span><span class='undefined'>
+                </span><span class='variable'>atomic</span><span class='spliter'>.</span><span class='variable'>AddUint64</span><span class='spliter'>(</span><span class='spliter'>&</span><span class='variable'>readOps</span><span class='number_hex'>, 1)</span><span class='undefined'>
+                </span><span class='variable'>time</span><span class='spliter'>.</span><span class='variable'>Sleep</span><span class='spliter'>(</span><span class='variable'>time</span><span class='spliter'>.</span><span class='variable'>Millisecond</span><span class='spliter'>)</span><span class='undefined'>
+            </span><span class='spliter'>}</span><span class='undefined'>
+        </span><span class='spliter'>}</span><span class='spliter'>(</span><span class='spliter'>)</span><span class='undefined'>
+    </span><span class='spliter'>}</span><span class='undefined'>
+
+    </span><span class='comment'>// We start 10 writes as well, using a similar
+</span><span class='undefined'>    </span><span class='comment'>// approach.
+</span><span class='undefined'>   </span><span class='lexeme'> for </span><span class='variable'>w</span><span class='undefined'> </span><span class='spliter'>:</span><span class='number_hex'>= 0;</span><span class='undefined'> </span><span class='variable'>w</span><span class='undefined'> </span><span class='number_hex'>< 10;</span><span class='undefined'> </span><span class='variable'>w</span><span class='spliter'>+</span><span class='spliter'>+</span><span class='undefined'> </span><span class='spliter'>{</span><span class='undefined'>
+       </span><span class='lexeme'> go </span><span class='variable'>func</span><span class='spliter'>(</span><span class='spliter'>)</span><span class='undefined'> </span><span class='spliter'>{</span><span class='undefined'>
+           </span><span class='lexeme'> for </span><span class='spliter'>{</span><span class='undefined'>
+                </span><span class='variable'>write</span><span class='undefined'> </span><span class='spliter'>:</span><span class='spliter'>=</span><span class='undefined'> </span><span class='spliter'>&</span><span class='variable'>writeOp</span><span class='spliter'>{</span><span class='undefined'>
+                    </span><span class='variable'>key</span><span class='spliter'>:</span><span class='undefined'>  </span><span class='variable'>rand</span><span class='spliter'>.</span><span class='variable'>Intn</span><span class='number_hex'>(5)</span><span class='spliter'>,</span><span class='undefined'>
+                    </span><span class='variable'>val</span><span class='spliter'>:</span><span class='undefined'>  </span><span class='variable'>rand</span><span class='spliter'>.</span><span class='variable'>Intn</span><span class='number_hex'>(100)</span><span class='spliter'>,</span><span class='undefined'>
+                    </span><span class='variable'>resp</span><span class='spliter'>:</span><span class='lexeme'> make(</span><span class='variable'>chan</span><span class='lexeme'> bool)</span><span class='spliter'>}</span><span class='undefined'>
+                </span><span class='variable'>writes</span><span class='undefined'> </span><span class='spliter'><</span><span class='spliter'>-</span><span class='undefined'> </span><span class='variable'>write</span><span class='undefined'>
+                </span><span class='spliter'><</span><span class='spliter'>-</span><span class='variable'>write</span><span class='spliter'>.</span><span class='variable'>resp</span><span class='undefined'>
+                </span><span class='variable'>atomic</span><span class='spliter'>.</span><span class='variable'>AddUint64</span><span class='spliter'>(</span><span class='spliter'>&</span><span class='variable'>writeOps</span><span class='number_hex'>, 1)</span><span class='undefined'>
+                </span><span class='variable'>time</span><span class='spliter'>.</span><span class='variable'>Sleep</span><span class='spliter'>(</span><span class='variable'>time</span><span class='spliter'>.</span><span class='variable'>Millisecond</span><span class='spliter'>)</span><span class='undefined'>
+            </span><span class='spliter'>}</span><span class='undefined'>
+        </span><span class='spliter'>}</span><span class='spliter'>(</span><span class='spliter'>)</span><span class='undefined'>
+    </span><span class='spliter'>}</span><span class='undefined'>
+
+    </span><span class='comment'>// Let the goroutines work for a second.
+</span><span class='undefined'>    </span><span class='variable'>time</span><span class='spliter'>.</span><span class='variable'>Sleep</span><span class='spliter'>(</span><span class='variable'>time</span><span class='spliter'>.</span><span class='variable'>Second</span><span class='spliter'>)</span><span class='undefined'>
+
+    </span><span class='comment'>// Finally, capture and report the op counts.
+</span><span class='undefined'>    </span><span class='variable'>readOpsFinal</span><span class='undefined'> </span><span class='spliter'>:</span><span class='spliter'>=</span><span class='undefined'> </span><span class='variable'>atomic</span><span class='spliter'>.</span><span class='variable'>LoadUint64</span><span class='spliter'>(</span><span class='spliter'>&</span><span class='variable'>readOps</span><span class='spliter'>)</span><span class='undefined'>
+    </span><span class='variable'>fmt</span><span class='spliter'>.</span><span class='variable'>Println</span><span class='spliter'>(</span><span class='string'>"readOps:"</span><span class='spliter'>,</span><span class='undefined'> </span><span class='variable'>readOpsFinal</span><span class='spliter'>)</span><span class='undefined'>
+    </span><span class='variable'>writeOpsFinal</span><span class='undefined'> </span><span class='spliter'>:</span><span class='spliter'>=</span><span class='undefined'> </span><span class='variable'>atomic</span><span class='spliter'>.</span><span class='variable'>LoadUint64</span><span class='spliter'>(</span><span class='spliter'>&</span><span class='variable'>writeOps</span><span class='spliter'>)</span><span class='undefined'>
+    </span><span class='variable'>fmt</span><span class='spliter'>.</span><span class='variable'>Println</span><span class='spliter'>(</span><span class='string'>"writeOps:"</span><span class='spliter'>,</span><span class='undefined'> </span><span class='variable'>writeOpsFinal</span><span class='spliter'>)</span><span class='undefined'>
+</span><span class='spliter'>}</span><span class='undefined'>
 </span>
 
 
